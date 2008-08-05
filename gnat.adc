@@ -1,0 +1,18 @@
+
+-- ./pgada-database.apk
+pragma source_file_name(pgada.database, spec_file_name => "pgada-database.ads");
+pragma source_file_name(pgada.database, body_file_name => "pgada-database.adb");
+
+-- ./pgada-syntax.apk
+pragma source_file_name(pgada.syntax, spec_file_name => "pgada-syntax.ads");
+pragma source_file_name(pgada.syntax, body_file_name => "pgada-syntax.adb");
+
+-- ./pgada-thin.apk
+pragma source_file_name(pgada.thin, spec_file_name => "pgada-thin.ads");
+
+-- ./pgada-utils.apk
+pragma source_file_name(pgada.utils, spec_file_name => "pgada-utils.ads");
+pragma source_file_name(pgada.utils, body_file_name => "pgada-utils.adb");
+
+-- ./pgada.apk
+pragma source_file_name(pgada, spec_file_name => "pgada.ads");
