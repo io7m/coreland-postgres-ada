@@ -40,410 +40,425 @@ with Interfaces.C.Strings;       use Interfaces.C, Interfaces.C.Strings;
 
 package body PGAda.Database is
 
-   use PGAda.Thin;
-
-   Exec_Status_Match :
-     constant array (Thin.Exec_Status_Type) of Exec_Status_Type :=
-       (PGRES_EMPTY_QUERY    => Empty_Query,
-        PGRES_COMMAND_OK     => Command_OK,
-        PGRES_TUPLES_OK      => Tuples_OK,
-        PGRES_COPY_OUT       => Copy_Out,
-        PGRES_COPY_IN        => Copy_In,
-        PGRES_BAD_RESPONSE   => Bad_Response,
-        PGRES_NONFATAL_ERROR => Non_Fatal_Error,
-        PGRES_FATAL_ERROR    => Fatal_Error);
-
-   -----------------------
-   -- Local subprograms --
-   -----------------------
-
-   function C_String_Or_Null (S : String) return chars_ptr;
-   procedure Free (S : in out chars_ptr);
-   --  Create a C string or return Null_Ptr if the string is empty, and
-   --  free it if needed.
-
-   ------------
-   -- Adjust --
-   ------------
-
-   procedure Adjust (Result : in out Result_Type) is
-   begin
-      Result.Ref_Count.all := Result.Ref_Count.all + 1;
-   end Adjust;
-
-   ----------------------
-   -- C_String_Or_Null --
-   ----------------------
-
-   function C_String_Or_Null (S : String) return chars_ptr is
-   begin
-      if S = "" then
-         return Null_Ptr;
-      else
-         return New_String (S);
-      end if;
-   end C_String_Or_Null;
-
-   -----------
-   -- Clear --
-   -----------
-
-   procedure Clear (Result : in out Result_Type) is
-   begin
-      PQ_Clear (Result.Actual);
-      Result.Actual := null;
-   end Clear;
-
-   --------------------
-   -- Command_Status --
-   --------------------
-
-   function Command_Status (Result : Result_Type) return String is
-   begin
-      return Value (PQ_Cmd_Status (Result.Actual));
-   end Command_Status;
-
-   --------
-   -- DB --
-   --------
-
-   function DB (Connection : Connection_Type) return String is
-   begin
-      return Value (PQ_Db (Connection.Actual));
-   end DB;
-
-   -------------------
-   -- Error_Message --
-   -------------------
-
-   function Error_Message (Connection : Connection_Type) return String is
-   begin
-      return Value (PQ_Error_Message (Connection.Actual));
-   end Error_Message;
-
-   ----------
-   -- Exec --
-   ----------
-
-   procedure Exec (Connection : in Connection_Type'Class;
-                   Query      : in String;
-                   Result     : out Result_Type)
-   is
-      C_Query : chars_ptr := New_String (Query);
-   begin
-      Result.Actual := PQ_Exec (Connection.Actual, C_Query);
-      Interfaces.C.Strings.Free (C_Query);
-   end Exec;
-
-   ----------
-   -- Exec --
-   ----------
-
-   function Exec (Connection : Connection_Type'Class; Query : String)
-     return Result_Type
-   is
-      Result : Result_Type;
-   begin
-      Exec (Connection, Query, Result);
-      return Result;
-   end Exec;
-
-   ----------
-   -- Exec --
-   ----------
-
-   procedure Exec (Connection : in Connection_Type'Class;
-                   Query      : in String)
-   is
-      Result : Result_Type;
-   begin
-      Exec (Connection, Query, Result);
-   end Exec;
-
-   ----------------
-   -- Field_Name --
-   ----------------
-
-   function Field_Name (Result      : Result_Type;
-                        Field_Index : Positive)
-     return String is
-   begin
-      return Value (PQ_F_Name (Result.Actual, int (Field_Index) - 1));
-   end Field_Name;
-
-   --------------
-   -- Finalize --
-   --------------
-
-   procedure Finalize (Connection : in out Connection_Type) is
-   begin
-      if Connection.Actual /= null then
-         Finish (Connection);
-      end if;
-   end Finalize;
-
-   --------------
-   -- Finalize --
-   --------------
-
-   procedure Finalize (Result : in out Result_Type) is
-      procedure Free is
-         new Ada.Unchecked_Deallocation (Natural, Natural_Access);
-   begin
-      Result.Ref_Count.all := Result.Ref_Count.all - 1;
-      if Result.Ref_Count.all = 0 and then Result.Actual /= null then
-         Free (Result.Ref_Count);
-         Clear (Result);
-      end if;
-   end Finalize;
-
-   ------------
-   -- Finish --
-   ------------
-
-   procedure Finish (Connection : in out Connection_Type) is
-   begin
-      PQ_Finish (Connection.Actual);
-      Connection.Actual := null;
-   end Finish;
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (S : in out chars_ptr) is
-   begin
-      if S /= Null_Ptr then
-         Interfaces.C.Strings.Free (S);
-      end if;
-   end Free;
-
-   ----------------
-   -- Get_Length --
-   ----------------
-
-   function Get_Length (Result      : Result_Type;
-                        Tuple_Index : Positive;
-                        Field_Index : Positive)
-     return Natural
-   is
-   begin
-      return Natural (PQ_Get_Length (Result.Actual,
-                                     int (Tuple_Index) - 1,
-                                     int (Field_Index) - 1));
-   end Get_Length;
-
-   ---------------
-   -- Get_Value --
-   ---------------
-
-   function Get_Value (Result      : Result_Type;
-                       Tuple_Index : Positive;
-                       Field_Index : Positive)
-     return String
-   is
-   begin
-      return Value (PQ_Get_Value (Result.Actual,
-                                 int (Tuple_Index) - 1,
-                                 int (Field_Index) - 1));
-   end Get_Value;
-
-   ---------------
-   -- Get_Value --
-   ---------------
-
-   function Get_Value (Result      : Result_Type;
-                       Tuple_Index : Positive;
-                       Field_Name  : String)
-     return String
-   is
-      C_Name : chars_ptr       := New_String (Field_Name);
-      Ret    : constant String :=
-        Get_Value (Result, Tuple_Index,
-                   1 + Natural (PQ_F_Number (Result.Actual, C_Name)));
-   begin
-      Free (C_Name);
-      return Ret;
-   end Get_Value;
-
-   ---------------
-   -- Get_Value --
-   ---------------
-
-   function Get_Value (Result      : Result_Type;
-                       Tuple_Index : Positive;
-                       Field_Index : Positive)
-     return Integer
-   is
-   begin
-      return Integer'Value (Get_Value (Result, Tuple_Index, Field_Index));
-   end Get_Value;
-
-   ---------------
-   -- Get_Value --
-   ---------------
-
-   function Get_Value (Result      : Result_Type;
-                       Tuple_Index : Positive;
-                       Field_Name  : String)
-     return Integer
-   is
-   begin
-      return Integer'Value (Get_Value (Result, Tuple_Index, Field_Name));
-   end Get_Value;
-
-   ----------
-   -- Host --
-   ----------
-
-   function Host (Connection : Connection_Type) return String is
-   begin
-      return Value (PQ_Host (Connection.Actual));
-   end Host;
-
-   -------------
-   -- Is_Null --
-   -------------
-
-   function Is_Null (Result      : Result_Type;
-                     Tuple_Index : Positive;
-                     Field_Index : Positive)
-     return Boolean
-   is
-   begin
-      return 1 = PQ_Get_Is_Null
-        (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1);
-   end Is_Null;
-
-   ----------------
-   -- Nbr_Fields --
-   ----------------
-
-   function Nbr_Fields (Result : Result_Type) return Natural is
-   begin
-      return Natural (PQ_N_Fields (Result.Actual));
-   end Nbr_Fields;
-
-   ----------------
-   -- Nbr_Tuples --
-   ----------------
-
-   function Nbr_Tuples (Result : Result_Type) return Natural is
-   begin
-      return Natural (PQ_N_Tuples (Result.Actual));
-   end Nbr_Tuples;
-
-   ----------------
-   -- OID_Status --
-   ----------------
-
-   function OID_Status (Result : Result_Type) return String is
-   begin
-      return Value (PQ_Oid_Status (Result.Actual));
-   end OID_Status;
-
-   -------------
-   -- Options --
-   -------------
-
-   function Options (Connection : Connection_Type) return String is
-   begin
-      return Value (PQ_Options (Connection.Actual));
-   end Options;
-
-   ----------
-   -- Port --
-   ----------
-
-   function Port (Connection : Connection_Type) return Positive is
-   begin
-      return Positive'Value (Value (PQ_Port (Connection.Actual)));
-   end Port;
-
-   -----------
-   -- Reset --
-   -----------
-
-   procedure Reset (Connection : in Connection_Type) is
-   begin
-      PQ_Reset (Connection.Actual);
-   end Reset;
-
-   -------------------
-   -- Result_Status --
-   -------------------
-
-   function Result_Status (Result : Result_Type) return Exec_Status_Type is
-   begin
-      return Exec_Status_Match (PQ_Result_Status (Result.Actual));
-   end Result_Status;
-
-   ------------------
-   -- Set_DB_Login --
-   ------------------
-
-   procedure Set_DB_Login (Connection : in out Connection_Type;
-                           Host       : in String  := "";
-                           Port       : in Natural := 0;
-                           Options    : in String  := "";
-                           TTY        : in String  := "";
-                           DB_Name    : in String  := "";
-                           Login      : in String  := "";
-                           Password   : in String  := "")
-   is
-      C_Host     : chars_ptr := C_String_Or_Null (Host);
-      C_Port     : chars_ptr;
-      C_Options  : chars_ptr := C_String_Or_Null (Options);
-      C_TTY      : chars_ptr := C_String_Or_Null (TTY);
-      C_DB_Name  : chars_ptr := C_String_Or_Null (DB_Name);
-      C_Login    : chars_ptr := C_String_Or_Null (Login);
-      C_Password : chars_ptr := C_String_Or_Null (Password);
-   begin
-      if Port = 0 then
-         C_Port := Null_Ptr;
-      else
-         C_Port := New_String (Positive'Image (Port));
-      end if;
-      Connection.Actual :=
-        PQ_Set_Db_Login (C_Host, C_Port, C_Options, C_TTY, C_DB_Name,
-                         C_Login, C_Password);
-      Free (C_Host);
-      Free (C_Port);
-      Free (C_Options);
-      Free (C_TTY);
-      Free (C_DB_Name);
-      Free (C_Login);
-      Free (C_Password);
-      if Connection.Actual = null then
-         raise PG_Error;
-      end if;
-   end Set_DB_Login;
-
-   ------------
-   -- Status --
-   ------------
-
-   function Status (Connection : Connection_Type)
-     return Connection_Status_Type
-   is
-   begin
-      case PQ_Status (Connection.Actual) is
-         when CONNECTION_OK =>
-            return Connection_OK;
-         when CONNECTION_BAD =>
-            return Connection_Bad;
-         when others =>
-            raise Constraint_Error;
-      end case;
-   end Status;
-
-   ---------
-   -- TTY --
-   ---------
-
-   function TTY (Connection : Connection_Type) return String is
-   begin
-      return Value (PQ_TTY (Connection.Actual));
-   end TTY;
+  use PGAda.Thin;
+
+  Exec_Status_Match :
+    constant array (Thin.Exec_Status_Type) of Exec_Status_Type :=
+      (PGRES_EMPTY_QUERY    => Empty_Query,
+       PGRES_COMMAND_OK     => Command_OK,
+       PGRES_TUPLES_OK      => Tuples_OK,
+       PGRES_COPY_OUT       => Copy_Out,
+       PGRES_COPY_IN        => Copy_In,
+       PGRES_BAD_RESPONSE   => Bad_Response,
+       PGRES_NONFATAL_ERROR => Non_Fatal_Error,
+       PGRES_FATAL_ERROR    => Fatal_Error);
+
+  -----------------------
+  -- Local subprograms --
+  -----------------------
+
+  function C_String_Or_Null (S : String) return chars_ptr;
+  procedure Free (S : in out chars_ptr);
+  --  Create a C string or return Null_Ptr if the string is empty, and
+  --  free it if needed.
+
+  ------------
+  -- Adjust --
+  ------------
+
+  procedure Adjust (Result : in out Result_Type) is
+  begin
+     Result.Ref_Count.all := Result.Ref_Count.all + 1;
+  end Adjust;
+
+  ----------------------
+  -- C_String_Or_Null --
+  ----------------------
+
+  function C_String_Or_Null (S : String) return chars_ptr is
+  begin
+     if S = "" then
+        return Null_Ptr;
+     else
+        return New_String (S);
+     end if;
+  end C_String_Or_Null;
+
+  -----------
+  -- Clear --
+  -----------
+
+  procedure Clear (Result : in out Result_Type) is
+  begin
+     PQ_Clear (Result.Actual);
+     Result.Actual := null;
+  end Clear;
+
+  --------------------
+  -- Command_Status --
+  --------------------
+
+  function Command_Status (Result : Result_Type) return String is
+  begin
+     return Value (PQ_Cmd_Status (Result.Actual));
+  end Command_Status;
+
+  --------
+  -- DB --
+  --------
+
+  function DB (Connection : Connection_Type) return String is
+  begin
+     return Value (PQ_Db (Connection.Actual));
+  end DB;
+
+  -------------------
+  -- Error_Message --
+  -------------------
+
+  function Error_Message (Connection : Connection_Type) return String is
+  begin
+     return Value (PQ_Error_Message (Connection.Actual));
+  end Error_Message;
+
+  ----------
+  -- Exec --
+  ----------
+
+  procedure Exec
+    (Connection : in Connection_Type'Class;
+     Query      : in String;
+     Result     : out Result_Type)
+  is
+     C_Query : chars_ptr := New_String (Query);
+  begin
+     Result.Actual := PQ_Exec (Connection.Actual, C_Query);
+     Interfaces.C.Strings.Free (C_Query);
+  end Exec;
+
+  ----------
+  -- Exec --
+  ----------
+
+  function Exec
+    (Connection : Connection_Type'Class;
+     Query      : String) return Result_Type
+  is
+     Result : Result_Type;
+  begin
+     Exec (Connection, Query, Result);
+     return Result;
+  end Exec;
+
+  ----------
+  -- Exec --
+  ----------
+
+  procedure Exec
+    (Connection : in Connection_Type'Class;
+     Query      : in String)
+  is
+     Result : Result_Type;
+  begin
+     Exec (Connection, Query, Result);
+  end Exec;
+
+  ----------------
+  -- Field_Name --
+  ----------------
+
+  function Field_Name
+    (Result      : Result_Type;
+     Field_Index : Positive) return String is
+  begin
+     return Value (PQ_F_Name (Result.Actual, int (Field_Index) - 1));
+  end Field_Name;
+
+  --------------
+  -- Finalize --
+  --------------
+
+  procedure Finalize (Connection : in out Connection_Type) is
+  begin
+     if Connection.Actual /= null then
+        Finish (Connection);
+     end if;
+  end Finalize;
+
+  --------------
+  -- Finalize --
+  --------------
+
+  procedure Finalize (Result : in out Result_Type) is
+     procedure Free is
+        new Ada.Unchecked_Deallocation (Natural, Natural_Access);
+  begin
+     Result.Ref_Count.all := Result.Ref_Count.all - 1;
+     if Result.Ref_Count.all = 0 and then Result.Actual /= null then
+        Free (Result.Ref_Count);
+        Clear (Result);
+     end if;
+  end Finalize;
+
+  ------------
+  -- Finish --
+  ------------
+
+  procedure Finish (Connection : in out Connection_Type) is
+  begin
+     PQ_Finish (Connection.Actual);
+     Connection.Actual := null;
+  end Finish;
+
+  ----------
+  -- Free --
+  ----------
+
+  procedure Free (S : in out chars_ptr) is
+  begin
+     if S /= Null_Ptr then
+        Interfaces.C.Strings.Free (S);
+     end if;
+  end Free;
+
+  ----------------
+  -- Get_Length --
+  ----------------
+
+  function Get_Length
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Index : Positive) return Natural is
+  begin
+     return Natural (PQ_Get_Length
+      (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1));
+  end Get_Length;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Index : Positive) return String is
+  begin
+     return Value (PQ_Get_Value
+      (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1));
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Name  : String) return String
+  is
+     C_Name : chars_ptr       := New_String (Field_Name);
+     Ret    : constant String :=
+       Get_Value (Result, Tuple_Index,
+         1 + Natural (PQ_F_Number (Result.Actual, C_Name)));
+  begin
+     Free (C_Name);
+     return Ret;
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Index : Positive) return Integer is
+  begin
+     return Integer'Value (Get_Value (Result, Tuple_Index, Field_Index));
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Name  : String) return Integer is
+  begin
+     return Integer'Value (Get_Value (Result, Tuple_Index, Field_Name));
+  end Get_Value;
+
+  ----------
+  -- Host --
+  ----------
+
+  function Host (Connection : Connection_Type) return String is
+  begin
+     return Value (PQ_Host (Connection.Actual));
+  end Host;
+
+  -------------
+  -- Is_Null --
+  -------------
+
+  function Is_Null
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Index : Positive) return Boolean is
+  begin
+     return 1 = PQ_Get_Is_Null
+       (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1);
+  end Is_Null;
+
+  ----------------
+  -- Nbr_Fields --
+  ----------------
+
+  function Nbr_Fields (Result : Result_Type) return Natural is
+  begin
+     return Natural (PQ_N_Fields (Result.Actual));
+  end Nbr_Fields;
+
+  ----------------
+  -- Nbr_Tuples --
+  ----------------
+
+  function Nbr_Tuples (Result : Result_Type) return Natural is
+  begin
+     return Natural (PQ_N_Tuples (Result.Actual));
+  end Nbr_Tuples;
+
+  ----------------
+  -- OID_Status --
+  ----------------
+
+  function OID_Status (Result : Result_Type) return String is
+  begin
+     return Value (PQ_Oid_Status (Result.Actual));
+  end OID_Status;
+
+  -------------
+  -- Options --
+  -------------
+
+  function Options (Connection : Connection_Type) return String is
+  begin
+     return Value (PQ_Options (Connection.Actual));
+  end Options;
+
+  ----------
+  -- Port --
+  ----------
+
+  function Port (Connection : Connection_Type) return Positive is
+  begin
+     return Positive'Value (Value (PQ_Port (Connection.Actual)));
+  end Port;
+
+  -----------
+  -- Reset --
+  -----------
+
+  procedure Reset (Connection : in Connection_Type) is
+  begin
+     PQ_Reset (Connection.Actual);
+  end Reset;
+
+  -------------------
+  -- Result_Status --
+  -------------------
+
+  function Result_Status (Result : Result_Type) return Exec_Status_Type is
+  begin
+     return Exec_Status_Match (PQ_Result_Status (Result.Actual));
+  end Result_Status;
+
+  ------------------------
+  -- Result_Error_Field --
+  ------------------------
+
+  function Result_Error_Field
+   (Result : Result_Type;
+    Field  : Error_Field) return string
+  is
+    C_Res : constant chars_ptr :=
+      PQ_Result_Error_Field (Result.actual, Field);
+  begin
+    if C_Res = Null_Ptr then
+      return "";
+    else
+      return Value (C_Res);
+    end if;
+  end Result_Error_Field;
+
+  ------------------
+  -- Set_DB_Login --
+  ------------------
+
+  procedure Set_DB_Login
+    (Connection : in out Connection_Type;
+     Host       : in String  := "";
+     Port       : in Natural := 0;
+     Options    : in String  := "";
+     TTY        : in String  := "";
+     DB_Name    : in String  := "";
+     Login      : in String  := "";
+     Password   : in String  := "")
+  is
+     C_Host     : chars_ptr := C_String_Or_Null (Host);
+     C_Port     : chars_ptr;
+     C_Options  : chars_ptr := C_String_Or_Null (Options);
+     C_TTY      : chars_ptr := C_String_Or_Null (TTY);
+     C_DB_Name  : chars_ptr := C_String_Or_Null (DB_Name);
+     C_Login    : chars_ptr := C_String_Or_Null (Login);
+     C_Password : chars_ptr := C_String_Or_Null (Password);
+  begin
+     if Port = 0 then
+        C_Port := Null_Ptr;
+     else
+        C_Port := New_String (Positive'Image (Port));
+     end if;
+     Connection.Actual :=
+       PQ_Set_Db_Login (C_Host, C_Port, C_Options, C_TTY, C_DB_Name,
+                        C_Login, C_Password);
+     Free (C_Host);
+     Free (C_Port);
+     Free (C_Options);
+     Free (C_TTY);
+     Free (C_DB_Name);
+     Free (C_Login);
+     Free (C_Password);
+     if Connection.Actual = null then
+        raise PG_Error;
+     end if;
+  end Set_DB_Login;
+
+  ------------
+  -- Status --
+  ------------
+
+  function Status (Connection : Connection_Type)
+    return Connection_Status_Type
+  is
+  begin
+     case PQ_Status (Connection.Actual) is
+        when CONNECTION_OK =>
+           return Connection_OK;
+        when CONNECTION_BAD =>
+           return Connection_Bad;
+        when others =>
+           raise Constraint_Error;
+     end case;
+  end Status;
+
+  ---------
+  -- TTY --
+  ---------
+
+  function TTY (Connection : Connection_Type) return String is
+  begin
+     return Value (PQ_TTY (Connection.Actual));
+  end TTY;
 
 end PGAda.Database;

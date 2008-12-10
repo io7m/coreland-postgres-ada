@@ -6,9 +6,10 @@ all:\
 ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.o ctxt/incdir.o ctxt/repos.o \
 ctxt/slibdir.o ctxt/version.o deinstaller deinstaller.o install-core.o \
 install-error.o install-posix.o install-win32.o install.a installer installer.o \
-instchk instchk.o insthier.o pgada-conf pgada-conf.o pgada-database.ali \
-pgada-database.o pgada-syntax.ali pgada-syntax.o pgada-thin.ali pgada-thin.o \
-pgada-utils.ali pgada-utils.o pgada.a pgada.ali pgada.o
+instchk instchk.o insthier.o pgada-conf pgada-conf.o pgada-constants.ali \
+pgada-constants.o pgada-database.ali pgada-database.o pgada-syntax.ali \
+pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali pgada-utils.o \
+pgada.a pgada.ali pgada.o
 
 # Mkf-deinstall
 deinstall: deinstaller conf-sosuffix
@@ -215,6 +216,13 @@ pgada-conf.o:\
 cc-compile pgada-conf.c ctxt.h
 	./cc-compile pgada-conf.c
 
+pgada-constants.ali:\
+ada-compile pgada-constants.ads pgada-constants.ads
+	./ada-compile pgada-constants.ads
+
+pgada-constants.o:\
+pgada-constants.ali
+
 pgada-database.ads:\
 pgada-thin.ads
 
@@ -270,9 +278,9 @@ obj_clean:
 	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller deinstaller.o \
 	install-core.o install-error.o install-posix.o install-win32.o install.a \
 	installer installer.o instchk instchk.o insthier.o pgada-conf pgada-conf.o \
-	pgada-database.ali pgada-database.o pgada-syntax.ali pgada-syntax.o \
-	pgada-thin.ali pgada-thin.o pgada-utils.ali pgada-utils.o pgada.a pgada.ali \
-	pgada.o
+	pgada-constants.ali pgada-constants.o pgada-database.ali pgada-database.o \
+	pgada-syntax.ali pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali \
+	pgada-utils.o pgada.a pgada.ali pgada.o
 ext_clean:
 	rm -f conf-adatype conf-cctype conf-ldtype conf-sosuffix conf-systype mk-ctxt
 
