@@ -1,10 +1,11 @@
 
--- ./pgada-constants.apk
-pragma source_file_name(pgada.constants, spec_file_name => "pgada-constants.ads");
-
 -- ./pgada-database.apk
 pragma source_file_name(pgada.database, spec_file_name => "pgada-database.ads");
 pragma source_file_name(pgada.database, body_file_name => "pgada-database.adb");
+
+-- ./pgada-errors.apk
+pragma source_file_name(pgada.errors, spec_file_name => "pgada-errors.ads");
+pragma source_file_name(pgada.errors, body_file_name => "pgada-errors.adb");
 
 -- ./pgada-syntax.apk
 pragma source_file_name(pgada.syntax, spec_file_name => "pgada-syntax.ads");

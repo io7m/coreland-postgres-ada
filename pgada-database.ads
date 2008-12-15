@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Finalization;
+with PGAda.Errors;
 with PGAda.Thin;
 
 package PGAda.Database is
@@ -113,6 +114,8 @@ package PGAda.Database is
     Fatal_Error);
 
   function Result_Status (Result : Result_Type) return Exec_Status_Type;
+
+  function Error_Code (Result : Result_Type) return PGAda.Errors.Error_Value_t;
 
   function Result_Error_Field
     (Result : Result_Type;

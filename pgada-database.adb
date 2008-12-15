@@ -392,6 +392,17 @@ package body PGAda.Database is
     end if;
   end Result_Error_Field;
 
+  ----------------
+  -- Error_Code --
+  ----------------
+
+  function Error_Code (Result : Result_Type)
+    return PGAda.Errors.Error_Value_t is
+  begin
+    return PGAda.Errors.Error_Value
+      (Result_Error_Field (Result, PG_DIAG_SQLSTATE));
+  end Error_Code;
+
   ------------------
   -- Set_DB_Login --
   ------------------

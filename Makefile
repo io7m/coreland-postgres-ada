@@ -6,8 +6,8 @@ all:\
 ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.o ctxt/incdir.o ctxt/repos.o \
 ctxt/slibdir.o ctxt/version.o deinstaller deinstaller.o install-core.o \
 install-error.o install-posix.o install-win32.o install.a installer installer.o \
-instchk instchk.o insthier.o pgada-conf pgada-conf.o pgada-constants.ali \
-pgada-constants.o pgada-database.ali pgada-database.o pgada-syntax.ali \
+instchk instchk.o insthier.o pgada-conf pgada-conf.o pgada-database.ali \
+pgada-database.o pgada-errors.ali pgada-errors.o pgada-syntax.ali \
 pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali pgada-utils.o \
 pgada.a pgada.ali pgada.o
 
@@ -216,15 +216,8 @@ pgada-conf.o:\
 cc-compile pgada-conf.c ctxt.h
 	./cc-compile pgada-conf.c
 
-pgada-constants.ali:\
-ada-compile pgada-constants.ads pgada-constants.ads
-	./ada-compile pgada-constants.ads
-
-pgada-constants.o:\
-pgada-constants.ali
-
 pgada-database.ads:\
-pgada-thin.ads
+pgada-errors.ads pgada-thin.ads
 
 pgada-database.ali:\
 ada-compile pgada-database.adb pgada-database.ads
@@ -232,6 +225,13 @@ ada-compile pgada-database.adb pgada-database.ads
 
 pgada-database.o:\
 pgada-database.ali
+
+pgada-errors.ali:\
+ada-compile pgada-errors.adb pgada-errors.ads
+	./ada-compile pgada-errors.adb
+
+pgada-errors.o:\
+pgada-errors.ali
 
 pgada-syntax.ali:\
 ada-compile pgada-syntax.adb pgada-syntax.ads
@@ -278,7 +278,7 @@ obj_clean:
 	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller deinstaller.o \
 	install-core.o install-error.o install-posix.o install-win32.o install.a \
 	installer installer.o instchk instchk.o insthier.o pgada-conf pgada-conf.o \
-	pgada-constants.ali pgada-constants.o pgada-database.ali pgada-database.o \
+	pgada-database.ali pgada-database.o pgada-errors.ali pgada-errors.o \
 	pgada-syntax.ali pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali \
 	pgada-utils.o pgada.a pgada.ali pgada.o
 ext_clean:
