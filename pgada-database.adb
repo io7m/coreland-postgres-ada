@@ -121,6 +121,17 @@ package body PGAda.Database is
      return Value (PQ_Error_Message (Connection.Actual));
   end Error_Message;
 
+  -------------------
+  -- Error_Message --
+  -------------------
+
+  function Error_Message (Result : Result_Type) return string is
+  begin
+    return Result_Error_Field
+      (Result => Result,
+       Field  => PG_DIAG_MESSAGE_PRIMARY);
+  end Error_Message;
+
   ----------
   -- Exec --
   ----------
@@ -287,6 +298,56 @@ package body PGAda.Database is
      Field_Name  : String) return Integer is
   begin
      return Integer'Value (Get_Value (Result, Tuple_Index, Field_Name));
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Index : Positive) return Long_Integer is
+  begin
+     return Long_Integer'Value (Get_Value (Result, Tuple_Index, Field_Index));
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Name  : String) return Long_Integer is
+  begin
+     return Long_Integer'Value (Get_Value (Result, Tuple_Index, Field_Name));
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Index : Positive) return Long_Long_Integer is
+  begin
+     return Long_Long_Integer'Value
+       (Get_Value (Result, Tuple_Index, Field_Index));
+  end Get_Value;
+
+  ---------------
+  -- Get_Value --
+  ---------------
+
+  function Get_Value
+    (Result      : Result_Type;
+     Tuple_Index : Positive;
+     Field_Name  : String) return Long_Long_Integer is
+  begin
+     return Long_Long_Integer'Value
+       (Get_Value (Result, Tuple_Index, Field_Name));
   end Get_Value;
 
   ----------

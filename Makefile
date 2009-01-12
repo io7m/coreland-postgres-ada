@@ -258,9 +258,9 @@ pgada-utils.o:\
 pgada-utils.ali
 
 pgada.a:\
-cc-slib pgada.sld pgada-conf.o pgada-database.o pgada-syntax.o pgada-thin.o \
+cc-slib pgada.sld pgada-database.o pgada-errors.o pgada-syntax.o pgada-thin.o \
 pgada-utils.o pgada.o
-	./cc-slib pgada pgada-conf.o pgada-database.o pgada-syntax.o pgada-thin.o \
+	./cc-slib pgada pgada-database.o pgada-errors.o pgada-syntax.o pgada-thin.o \
 	pgada-utils.o pgada.o
 
 pgada.ali:\

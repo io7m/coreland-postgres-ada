@@ -50,7 +50,7 @@ if [ -f "${BASE_DIR}/conf-aldfflist" ]
 then
   for f in `cat "${BASE_DIR}/conf-aldfflist"`
   do
-    FLAGS=`cat $f 2>/dev/null`
+    FLAGS=`cat $f 2>/dev/null` || fatal "could not read $f"
     ADALDFLAGS="${ADALDFLAGS} ${FLAGS}"
   done
 fi
@@ -67,7 +67,7 @@ then
   for f in `cat "${out}.lff"`
   do
     targ="`dirname $out`/`dirname $f`/`basename $f`"
-    FLAGS="`cat $targ 2>/dev/null`"
+    FLAGS="`cat $targ 2>/dev/null`" || fatal "could not read $f"
     ADALDFLAGS="${ADALDFLAGS} ${FLAGS}"
   done
 fi
@@ -80,7 +80,12 @@ case ${SYSTYPE} in
   DARWIN)
     case ${ADATYPE} in
       GCC)
-        ADALDFLAGS="${ADALDFLAGS} -L/usr/local/ada-4.2/lib -lgcc_s.1" # __UNWIND bug
+        # undefined __UNWIND symbols bug
+        # /usr/local/ada-n.m/bin/gcc -> /usr/local/ada-n.m/lib
+        SED_SUB="s:bin/${ADALINK}$:lib:g"
+        GCC_LIB_PATH="`which ${ADALINK} | sed "${SED_SUB}"`" ||
+          fatal "could not convert GCC_LIB_PATH"
+        ADALDFLAGS="${ADALDFLAGS} ${GCC_LIB_PATH} -largs -lgcc_s.1"
         ;;
       *)
         ;;

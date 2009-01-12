@@ -92,6 +92,8 @@ package PGAda.Database is
   --  because this function cannot be a primitive operation of several
   --  tagged types.
 
+  function Error_Message (Result : Result_Type) return String;
+
   function Exec
    (Connection : Connection_Type'Class;
     Query      : String) return Result_Type;
@@ -122,8 +124,12 @@ package PGAda.Database is
      Field  : Error_Field) return string;
 
   function Nbr_Tuples (Result : Result_Type) return Natural;
+  function Number_Of_Tuples (Result : Result_Type)
+    return Natural renames Nbr_Tuples;
 
   function Nbr_Fields (Result : Result_Type) return Natural;
+  function Number_Of_Fields (Result : Result_Type)
+    return Natural renames Nbr_Fields;
 
   function Field_Name
    (Result      : Result_Type;
@@ -148,6 +154,26 @@ package PGAda.Database is
    (Result      : Result_Type;
     Tuple_Index : Positive;
     Field_Name  : String) return Integer;
+
+  function Get_Value
+   (Result      : Result_Type;
+    Tuple_Index : Positive;
+    Field_Index : Positive) return Long_Integer;
+
+  function Get_Value
+   (Result      : Result_Type;
+    Tuple_Index : Positive;
+    Field_Name  : String) return Long_Integer;
+
+  function Get_Value
+   (Result      : Result_Type;
+    Tuple_Index : Positive;
+    Field_Index : Positive) return Long_Long_Integer;
+
+  function Get_Value
+   (Result      : Result_Type;
+    Tuple_Index : Positive;
+    Field_Name  : String) return Long_Long_Integer;
 
   function Get_Length
    (Result      : Result_Type;

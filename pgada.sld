@@ -1,5 +1,5 @@
-pgada-conf.o
 pgada-database.o
+pgada-errors.o
 pgada-syntax.o
 pgada-thin.o
 pgada-utils.o

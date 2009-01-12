@@ -57,7 +57,7 @@ if [ -f "${BASE_DIR}/conf-adafflist" ]
 then
   for f in `cat "${BASE_DIR}/conf-adafflist"`
   do
-    FLAGS=`cat $f 2>/dev/null`
+    FLAGS=`cat $f 2>/dev/null` || fatal "could not read $f"
     ADAFLAGS="${ADAFLAGS} ${FLAGS}"
   done
 fi
@@ -70,8 +70,8 @@ if [ -f "${out}.iff" ]
 then
   for f in `cat "${out}.iff"`
   do
-    targ="`dirname $out`/`dirname $f`/`basename $f`"
-    FLAGS="`cat $targ 2>/dev/null`"
+    targ="`dirname $out`/`dirname $f`/`basename $f`" 
+    FLAGS="`cat $targ 2>/dev/null`" || fatal "could not read $f"
     ADAFLAGS="${ADAFLAGS} ${FLAGS}"
   done
 fi
