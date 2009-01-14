@@ -84,10 +84,27 @@ package PGAda.Database is
   type Result_Type is
      new Ada.Finalization.Controlled with private;
 
+  type Exec_Status_Type is
+   (Empty_Query,
+    Command_OK,
+    Tuples_OK,
+    Copy_Out,
+    Copy_In,
+    Bad_Response,
+    Non_Fatal_Error,
+    Fatal_Error);
+
+  procedure Exec
+   (Connection : in Connection_Type'Class;
+    Query      : in String;
+    Result     : out Result_Type;
+    Status     : out Exec_Status_Type);
+
   procedure Exec
    (Connection : in Connection_Type'Class;
     Query      : in String;
     Result     : out Result_Type);
+
   --  Note: the Connection parameter is of type Connection_Type'Class
   --  because this function cannot be a primitive operation of several
   --  tagged types.
@@ -104,16 +121,6 @@ package PGAda.Database is
     Query      : in String);
   --  This procedure executes the query but does not test the result. It
   --  can be used for queries that do not require a result and cannot fail.
-
-  type Exec_Status_Type is
-   (Empty_Query,
-    Command_OK,
-    Tuples_OK,
-    Copy_Out,
-    Copy_In,
-    Bad_Response,
-    Non_Fatal_Error,
-    Fatal_Error);
 
   function Result_Status (Result : Result_Type) return Exec_Status_Type;
 

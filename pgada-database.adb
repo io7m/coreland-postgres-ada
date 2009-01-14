@@ -36,9 +36,15 @@
 ------------------------------------------------------------------------------
 
 with Ada.Unchecked_Deallocation;
-with Interfaces.C.Strings;       use Interfaces.C, Interfaces.C.Strings;
+with Interfaces.C.Strings;
+with Interfaces.C;
 
 package body PGAda.Database is
+  package ICS renames Interfaces.C.Strings;
+  package IC renames Interfaces.C;
+
+  use type ICS.chars_ptr;
+  use type IC.int;
 
   use PGAda.Thin;
 
@@ -57,8 +63,8 @@ package body PGAda.Database is
   -- Local subprograms --
   -----------------------
 
-  function C_String_Or_Null (S : String) return chars_ptr;
-  procedure Free (S : in out chars_ptr);
+  function C_String_Or_Null (S : String) return ICS.chars_ptr;
+  procedure Free (S : in out ICS.chars_ptr);
   --  Create a C string or return Null_Ptr if the string is empty, and
   --  free it if needed.
 
@@ -75,12 +81,12 @@ package body PGAda.Database is
   -- C_String_Or_Null --
   ----------------------
 
-  function C_String_Or_Null (S : String) return chars_ptr is
+  function C_String_Or_Null (S : String) return ICS.chars_ptr is
   begin
      if S = "" then
-        return Null_Ptr;
+        return ICS.Null_Ptr;
      else
-        return New_String (S);
+        return ICS.New_String (S);
      end if;
   end C_String_Or_Null;
 
@@ -100,7 +106,7 @@ package body PGAda.Database is
 
   function Command_Status (Result : Result_Type) return String is
   begin
-     return Value (PQ_Cmd_Status (Result.Actual));
+     return ICS.Value (PQ_Cmd_Status (Result.Actual));
   end Command_Status;
 
   --------
@@ -109,7 +115,7 @@ package body PGAda.Database is
 
   function DB (Connection : Connection_Type) return String is
   begin
-     return Value (PQ_Db (Connection.Actual));
+     return ICS.Value (PQ_Db (Connection.Actual));
   end DB;
 
   -------------------
@@ -118,7 +124,7 @@ package body PGAda.Database is
 
   function Error_Message (Connection : Connection_Type) return String is
   begin
-     return Value (PQ_Error_Message (Connection.Actual));
+     return ICS.Value (PQ_Error_Message (Connection.Actual));
   end Error_Message;
 
   -------------------
@@ -139,12 +145,29 @@ package body PGAda.Database is
   procedure Exec
     (Connection : in Connection_Type'Class;
      Query      : in String;
-     Result     : out Result_Type)
+     Result     : out Result_Type;
+     Status     : out Exec_Status_Type)
   is
-     C_Query : chars_ptr := New_String (Query);
+     C_Query : ICS.chars_ptr := ICS.New_String (Query);
   begin
      Result.Actual := PQ_Exec (Connection.Actual, C_Query);
-     Interfaces.C.Strings.Free (C_Query);
+     ICS.Free (C_Query);
+     Status := Result_Status (Result);
+  end Exec;
+
+  ----------
+  -- Exec --
+  ----------
+
+  procedure Exec
+    (Connection : in Connection_Type'Class;
+     Query      : in String;
+     Result     : out Result_Type)
+  is
+     C_Query : ICS.chars_ptr := ICS.New_String (Query);
+  begin
+     Result.Actual := PQ_Exec (Connection.Actual, C_Query);
+     ICS.Free (C_Query);
   end Exec;
 
   ----------
@@ -182,7 +205,7 @@ package body PGAda.Database is
     (Result      : Result_Type;
      Field_Index : Positive) return String is
   begin
-     return Value (PQ_F_Name (Result.Actual, int (Field_Index) - 1));
+     return ICS.Value (PQ_F_Name (Result.Actual, IC.int (Field_Index) - 1));
   end Field_Name;
 
   --------------
@@ -225,10 +248,10 @@ package body PGAda.Database is
   -- Free --
   ----------
 
-  procedure Free (S : in out chars_ptr) is
+  procedure Free (S : in out ICS.chars_ptr) is
   begin
-     if S /= Null_Ptr then
-        Interfaces.C.Strings.Free (S);
+     if S /= ICS.Null_Ptr then
+        ICS.Free (S);
      end if;
   end Free;
 
@@ -242,7 +265,7 @@ package body PGAda.Database is
      Field_Index : Positive) return Natural is
   begin
      return Natural (PQ_Get_Length
-      (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1));
+      (Result.Actual, IC.int (Tuple_Index) - 1, IC.int (Field_Index) - 1));
   end Get_Length;
 
   ---------------
@@ -254,8 +277,8 @@ package body PGAda.Database is
      Tuple_Index : Positive;
      Field_Index : Positive) return String is
   begin
-     return Value (PQ_Get_Value
-      (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1));
+     return ICS.Value (PQ_Get_Value
+      (Result.Actual, IC.int (Tuple_Index) - 1, IC.int (Field_Index) - 1));
   end Get_Value;
 
   ---------------
@@ -267,7 +290,7 @@ package body PGAda.Database is
      Tuple_Index : Positive;
      Field_Name  : String) return String
   is
-     C_Name : chars_ptr       := New_String (Field_Name);
+     C_Name : ICS.chars_ptr       := ICS.New_String (Field_Name);
      Ret    : constant String :=
        Get_Value (Result, Tuple_Index,
          1 + Natural (PQ_F_Number (Result.Actual, C_Name)));
@@ -356,7 +379,7 @@ package body PGAda.Database is
 
   function Host (Connection : Connection_Type) return String is
   begin
-     return Value (PQ_Host (Connection.Actual));
+     return ICS.Value (PQ_Host (Connection.Actual));
   end Host;
 
   -------------
@@ -369,7 +392,7 @@ package body PGAda.Database is
      Field_Index : Positive) return Boolean is
   begin
      return 1 = PQ_Get_Is_Null
-       (Result.Actual, int (Tuple_Index) - 1, int (Field_Index) - 1);
+       (Result.Actual, IC.int (Tuple_Index) - 1, IC.int (Field_Index) - 1);
   end Is_Null;
 
   ----------------
@@ -396,7 +419,7 @@ package body PGAda.Database is
 
   function OID_Status (Result : Result_Type) return String is
   begin
-     return Value (PQ_Oid_Status (Result.Actual));
+     return ICS.Value (PQ_Oid_Status (Result.Actual));
   end OID_Status;
 
   -------------
@@ -405,7 +428,7 @@ package body PGAda.Database is
 
   function Options (Connection : Connection_Type) return String is
   begin
-     return Value (PQ_Options (Connection.Actual));
+     return ICS.Value (PQ_Options (Connection.Actual));
   end Options;
 
   ----------
@@ -414,7 +437,7 @@ package body PGAda.Database is
 
   function Port (Connection : Connection_Type) return Positive is
   begin
-     return Positive'Value (Value (PQ_Port (Connection.Actual)));
+     return Positive'Value (ICS.Value (PQ_Port (Connection.Actual)));
   end Port;
 
   -----------
@@ -443,13 +466,13 @@ package body PGAda.Database is
    (Result : Result_Type;
     Field  : Error_Field) return string
   is
-    C_Res : constant chars_ptr :=
+    C_Res : constant ICS.chars_ptr :=
       PQ_Result_Error_Field (Result.actual, Field);
   begin
-    if C_Res = Null_Ptr then
+    if C_Res = ICS.Null_Ptr then
       return "";
     else
-      return Value (C_Res);
+      return ICS.Value (C_Res);
     end if;
   end Result_Error_Field;
 
@@ -478,18 +501,18 @@ package body PGAda.Database is
      Login      : in String  := "";
      Password   : in String  := "")
   is
-     C_Host     : chars_ptr := C_String_Or_Null (Host);
-     C_Port     : chars_ptr;
-     C_Options  : chars_ptr := C_String_Or_Null (Options);
-     C_TTY      : chars_ptr := C_String_Or_Null (TTY);
-     C_DB_Name  : chars_ptr := C_String_Or_Null (DB_Name);
-     C_Login    : chars_ptr := C_String_Or_Null (Login);
-     C_Password : chars_ptr := C_String_Or_Null (Password);
+     C_Host     : ICS.chars_ptr := C_String_Or_Null (Host);
+     C_Port     : ICS.chars_ptr;
+     C_Options  : ICS.chars_ptr := C_String_Or_Null (Options);
+     C_TTY      : ICS.chars_ptr := C_String_Or_Null (TTY);
+     C_DB_Name  : ICS.chars_ptr := C_String_Or_Null (DB_Name);
+     C_Login    : ICS.chars_ptr := C_String_Or_Null (Login);
+     C_Password : ICS.chars_ptr := C_String_Or_Null (Password);
   begin
      if Port = 0 then
-        C_Port := Null_Ptr;
+        C_Port := ICS.Null_Ptr;
      else
-        C_Port := New_String (Positive'Image (Port));
+        C_Port := ICS.New_String (Positive'Image (Port));
      end if;
      Connection.Actual :=
        PQ_Set_Db_Login (C_Host, C_Port, C_Options, C_TTY, C_DB_Name,
@@ -530,7 +553,7 @@ package body PGAda.Database is
 
   function TTY (Connection : Connection_Type) return String is
   begin
-     return Value (PQ_TTY (Connection.Actual));
+     return ICS.Value (PQ_TTY (Connection.Actual));
   end TTY;
 
 end PGAda.Database;
