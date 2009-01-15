@@ -4,6 +4,7 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
+--  Copyright (c) coreland 2009                                             --
 --  Copyright (c) Samuel Tardieu 2000                                       --
 --  All rights reserved.                                                    --
 --                                                                          --
@@ -35,21 +36,22 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with PGAda.Database; use PGAda.Database;
+with PGAda.Database;
 
 package PGAda.Utils is
+  pragma Preelaborate;
 
-   pragma Preelaborate;
+  -- Return the next value in a sequence
+  function Next_Value
+    (DB            : in PGAda.Database.Connection_Type'Class;
+     Sequence_Name : in String) return Integer;
 
-   function Next_Val
-     (DB            : Connection_Type'Class;
-      Sequence_Name : String)
-      return Integer;
-   --  Return the next value in a sequence
-
-   procedure Begin_Transaction (DB : in Connection_Type'Class);
-   procedure Commit (DB : in Connection_Type'Class);
-   procedure Rollback (DB : in Connection_Type'Class);
-   --  Begin, commit or rollback a transaction
+  -- Begin, commit or rollback a transaction.
+  procedure Begin_Transaction
+    (DB : in PGAda.Database.Connection_Type'Class);
+  procedure Commit
+    (DB : in PGAda.Database.Connection_Type'Class);
+  procedure Rollback
+    (DB : in PGAda.Database.Connection_Type'Class);
 
 end PGAda.Utils;

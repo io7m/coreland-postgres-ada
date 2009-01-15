@@ -4,6 +4,7 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
+--  Copyright (c) coreland 2009                                             --
 --  Copyright (c) Samuel Tardieu 2000                                       --
 --  All rights reserved.                                                    --
 --                                                                          --
@@ -35,50 +36,50 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with PGAda.Syntax; use PGAda.Syntax;
+with PGAda.Syntax;
 
 package body PGAda.Utils is
 
-   -----------------------
-   -- Begin_Transaction --
-   -----------------------
+  -----------------------
+  -- Begin_Transaction --
+  -----------------------
 
-   procedure Begin_Transaction (DB : in Connection_Type'Class) is
-   begin
-      Exec (DB, "BEGIN");
-   end Begin_Transaction;
+  procedure Begin_Transaction (DB : in PGAda.Database.Connection_Type'Class) is
+  begin
+    PGAda.Database.Exec (DB, "BEGIN");
+  end Begin_Transaction;
 
-   ------------
-   -- Commit --
-   ------------
+  ------------
+  -- Commit --
+  ------------
 
-   procedure Commit (DB : in Connection_Type'Class) is
-   begin
-      Exec (DB, "COMMIT");
-   end Commit;
+  procedure Commit (DB : in PGAda.Database.Connection_Type'Class) is
+  begin
+    PGAda.Database.Exec (DB, "COMMIT");
+  end Commit;
 
-   --------------
-   -- Next_Val --
-   --------------
+  ----------------
+  -- Next_Value --
+  ----------------
 
-   function Next_Val
-     (DB            : Connection_Type'Class;
-      Sequence_Name : String)
-      return Integer
-   is
-      Result : Result_Type;
-   begin
-      Exec (DB, "SELECT NEXTVAL(" & Escape (Sequence_Name) & ")", Result);
-      return Integer'Value (Get_Value (Result, 1, 1));
-   end Next_Val;
+  function Next_Value
+    (DB            : in PGAda.Database.Connection_Type'Class;
+     Sequence_Name : in String) return Integer
+  is
+    Result : PGAda.Database.Result_Type;
+  begin
+    PGAda.Database.Exec (DB,
+      "SELECT NEXTVAL(" & PGAda.syntax.Escape (Sequence_Name) & ")", Result);
+    return Integer'Value (PGAda.Database.Get_Value (Result, 1, 1));
+  end Next_Value;
 
-   --------------
-   -- Rollback --
-   --------------
+  --------------
+  -- Rollback --
+  --------------
 
-   procedure Rollback (DB : in Connection_Type'Class) is
-   begin
-      Exec (DB, "ROLLBACK");
-   end Rollback;
+  procedure Rollback (DB : in PGAda.Database.Connection_Type'Class) is
+  begin
+    PGAda.Database.Exec (DB, "ROLLBACK");
+  end Rollback;
 
 end PGAda.Utils;
