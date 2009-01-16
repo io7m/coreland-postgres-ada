@@ -43,15 +43,15 @@ package PGAda.Utils is
 
   -- Return the next value in a sequence
   function Next_Value
-    (DB            : in PGAda.Database.Connection_Type'Class;
+    (DB            : in PGAda.Database.Connection_T'Class;
      Sequence_Name : in String) return Integer;
 
   -- Begin, commit or rollback a transaction.
   procedure Begin_Transaction
-    (DB : in PGAda.Database.Connection_Type'Class);
+    (DB : in PGAda.Database.Connection_T'Class);
   procedure Commit
-    (DB : in PGAda.Database.Connection_Type'Class);
+    (DB : in PGAda.Database.Connection_T'Class);
   procedure Rollback
-    (DB : in PGAda.Database.Connection_Type'Class);
+    (DB : in PGAda.Database.Connection_T'Class);
 
 end PGAda.Utils;

@@ -45,13 +45,13 @@ package PGAda.Database is
 
   PG_Error : exception;
 
-  type Connection_Type is
+  type Connection_T is
     new Ada.Finalization.Limited_Controlled with private;
 
   subtype Error_Field is PGAda.Thin.Error_Field;
 
   procedure Set_DB_Login
-   (Connection : in out Connection_Type;
+   (Connection : in out Connection_T;
     Host       : in String  := "";
     Port       : in Natural := 0;
     Options    : in String  := "";
@@ -62,29 +62,28 @@ package PGAda.Database is
 
   --  Connect to a database
 
-  function DB (Connection : Connection_Type) return String;
-  function Host (Connection : Connection_Type) return String;
-  function Port (Connection : Connection_Type) return Positive;
-  function Options (Connection : Connection_Type) return String;
-  function TTY (Connection : Connection_Type) return String;
+  function DB (Connection : Connection_T) return String;
+  function Host (Connection : Connection_T) return String;
+  function Port (Connection : Connection_T) return Positive;
+  function Options (Connection : Connection_T) return String;
 
   --  Query characteristics of an open connection
 
-  type Connection_Status_Type is (Connection_OK, Connection_Bad);
+  type Connection_Status_T is (Connection_OK, Connection_Bad);
 
-  function Status (Connection : Connection_Type)
-    return Connection_Status_Type;
+  function Status (Connection : Connection_T)
+    return Connection_Status_T;
 
-  function Error_Message (Connection : Connection_Type) return String;
+  function Error_Message (Connection : Connection_T) return String;
 
-  procedure Finish (Connection : in out Connection_Type);
+  procedure Finish (Connection : in out Connection_T);
 
-  procedure Reset (Connection : in Connection_Type);
+  procedure Reset (Connection : in Connection_T);
 
-  type Result_Type is
+  type Result_T is
      new Ada.Finalization.Controlled with private;
 
-  type Exec_Status_Type is
+  type Exec_Status_T is
    (Empty_Query,
     Command_OK,
     Tuples_OK,
@@ -95,123 +94,123 @@ package PGAda.Database is
     Fatal_Error);
 
   procedure Exec
-   (Connection : in Connection_Type'Class;
+   (Connection : in Connection_T'Class;
     Query      : in String;
-    Result     : out Result_Type;
-    Status     : out Exec_Status_Type);
+    Result     : out Result_T;
+    Status     : out Exec_Status_T);
 
   procedure Exec
-   (Connection : in Connection_Type'Class;
+   (Connection : in Connection_T'Class;
     Query      : in String;
-    Result     : out Result_Type);
+    Result     : out Result_T);
 
-  --  Note: the Connection parameter is of type Connection_Type'Class
+  --  Note: the Connection parameter is of type Connection_T'Class
   --  because this function cannot be a primitive operation of several
   --  tagged types.
 
-  function Error_Message (Result : Result_Type) return String;
+  function Error_Message (Result : Result_T) return String;
 
   function Exec
-   (Connection : Connection_Type'Class;
-    Query      : String) return Result_Type;
+   (Connection : Connection_T'Class;
+    Query      : String) return Result_T;
   --  Function form of the subprogram
 
   procedure Exec
-   (Connection : in Connection_Type'Class;
+   (Connection : in Connection_T'Class;
     Query      : in String);
   --  This procedure executes the query but does not test the result. It
   --  can be used for queries that do not require a result and cannot fail.
 
-  function Result_Status (Result : Result_Type) return Exec_Status_Type;
+  function Result_Status (Result : Result_T) return Exec_Status_T;
 
-  function Error_Code (Result : Result_Type) return PGAda.Errors.Error_Value_t;
+  function Error_Code (Result : Result_T) return PGAda.Errors.Error_Value_t;
 
   function Result_Error_Field
-    (Result : Result_Type;
+    (Result : Result_T;
      Field  : Error_Field) return string;
 
-  function Nbr_Tuples (Result : Result_Type) return Natural;
-  function Number_Of_Tuples (Result : Result_Type)
+  function Nbr_Tuples (Result : Result_T) return Natural;
+  function Number_Of_Tuples (Result : Result_T)
     return Natural renames Nbr_Tuples;
 
-  function Nbr_Fields (Result : Result_Type) return Natural;
-  function Number_Of_Fields (Result : Result_Type)
+  function Nbr_Fields (Result : Result_T) return Natural;
+  function Number_Of_Fields (Result : Result_T)
     return Natural renames Nbr_Fields;
 
   function Field_Name
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Field_Index : Positive) return String;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Index : Positive) return String;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Name  : String) return String;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Index : Positive) return Integer;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Name  : String) return Integer;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Index : Positive) return Long_Integer;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Name  : String) return Long_Integer;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Index : Positive) return Long_Long_Integer;
 
   function Get_Value
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Name  : String) return Long_Long_Integer;
 
   function Get_Length
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Index : Positive) return Natural;
 
   function Is_Null
-   (Result      : Result_Type;
+   (Result      : Result_T;
     Tuple_Index : Positive;
     Field_Index : Positive) return Boolean;
 
-  function Command_Status (Result : Result_Type) return String;
+  function Command_Status (Result : Result_T) return String;
 
-  function OID_Status (Result : Result_Type) return String;
+  function OID_Status (Result : Result_T) return String;
 
-  procedure Clear (Result : in out Result_Type);
+  procedure Clear (Result : in out Result_T);
 
 private
 
-  type Connection_Type is new Ada.Finalization.Limited_Controlled with record
-     Actual : Thin.PG_Conn_Access;
+  type Connection_T is new Ada.Finalization.Limited_Controlled with record
+     Actual : Thin.PG_Conn_Access_T;
   end record;
-  procedure Finalize (Connection : in out Connection_Type);
+  procedure Finalize (Connection : in out Connection_T);
 
-  type Natural_Access is access Natural;
+  type Natural_Access_T is access Natural;
 
-  type Result_Type is new Ada.Finalization.Controlled with record
-     Actual    : Thin.PG_Result_Access;
-     Ref_Count : Natural_Access := new Integer'(1);
+  type Result_T is new Ada.Finalization.Controlled with record
+     Actual    : Thin.PG_Result_Access_T;
+     Ref_Count : Natural_Access_T := new Integer'(1);
   end record;
-  procedure Adjust (Result : in out Result_Type);
-  procedure Finalize (Result : in out Result_Type);
+  procedure Adjust (Result : in out Result_T);
+  procedure Finalize (Result : in out Result_T);
 
 end PGAda.Database;

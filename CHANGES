@@ -1,2 +1,5 @@
 20081204 version: postgres-ada 0.1
 20081204 code: updated installer.
+20090116 code: large type changes (_Type -> _T, _Access -> _Access_T).
+20090116 code: removed all 'use' package statements.
+20090116 code: removed obsolete TTY functions.
