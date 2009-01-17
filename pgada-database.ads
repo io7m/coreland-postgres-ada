@@ -192,6 +192,7 @@ package PGAda.Database is
     Field_Index : Positive) return Boolean;
 
   function Command_Status (Result : Result_T) return String;
+  function Command_Tuples (Result : Result_T) return String;
 
   function OID_Status (Result : Result_T) return String;
 

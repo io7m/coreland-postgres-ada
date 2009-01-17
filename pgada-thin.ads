@@ -180,6 +180,9 @@ package PGAda.Thin is
     Field_Num : C.int) return C.int;
   pragma Import (C, PQ_Get_Is_Null, "PQgetisnull");
 
+  function PQ_Cmd_Tuples (Res : PG_Result_Access_T) return CS.chars_ptr;
+  pragma Import (C, PQ_Cmd_Tuples, "PQcmdTuples");
+
   function PQ_Cmd_Status (Res : PG_Result_Access_T) return CS.chars_ptr;
   pragma Import (C, PQ_Cmd_Status, "PQcmdStatus");
 

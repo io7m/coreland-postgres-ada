@@ -29,6 +29,24 @@ install-dryrun: installer conf-sosuffix
 install-check: instchk conf-sosuffix
 	./instchk
 
+# -- SYSDEPS start
+_sysinfo.h:
+	@echo SYSDEPS sysinfo run create _sysinfo.h 
+	@(cd SYSDEPS/modules/sysinfo && ./run)
+
+
+sysinfo_clean:
+	@echo SYSDEPS sysinfo clean _sysinfo.h 
+	@(cd SYSDEPS/modules/sysinfo && ./clean)
+
+
+sysdeps_clean:\
+sysinfo_clean \
+
+
+# -- SYSDEPS end
+
+
 ada-bind:\
 conf-adabind conf-systype conf-adatype
 
@@ -213,45 +231,51 @@ cc-link pgada-conf.ld pgada-conf.o ctxt/ctxt.a
 	./cc-link pgada-conf pgada-conf.o ctxt/ctxt.a
 
 pgada-conf.o:\
-cc-compile pgada-conf.c ctxt.h
+cc-compile pgada-conf.c ctxt.h _sysinfo.h
 	./cc-compile pgada-conf.c
 
 pgada-database.ads:\
-pgada-errors.ads pgada-thin.ads
+pgada.ali pgada-errors.ali pgada-thin.ali
 
 pgada-database.ali:\
-ada-compile pgada-database.adb pgada-database.ads
+ada-compile pgada-database.adb pgada.ali pgada-database.ads
 	./ada-compile pgada-database.adb
 
 pgada-database.o:\
 pgada-database.ali
 
+pgada-errors.ads:\
+pgada.ali
+
 pgada-errors.ali:\
-ada-compile pgada-errors.adb pgada-errors.ads
+ada-compile pgada-errors.adb pgada.ali pgada-errors.ads
 	./ada-compile pgada-errors.adb
 
 pgada-errors.o:\
 pgada-errors.ali
 
+pgada-syntax.ads:\
+pgada.ali
+
 pgada-syntax.ali:\
-ada-compile pgada-syntax.adb pgada-syntax.ads
+ada-compile pgada-syntax.adb pgada.ali pgada-syntax.ads
 	./ada-compile pgada-syntax.adb
 
 pgada-syntax.o:\
 pgada-syntax.ali
 
 pgada-thin.ali:\
-ada-compile pgada-thin.ads pgada-thin.ads
+ada-compile pgada-thin.ads pgada.ali pgada-thin.ads
 	./ada-compile pgada-thin.ads
 
 pgada-thin.o:\
 pgada-thin.ali
 
 pgada-utils.ads:\
-pgada-database.ads
+pgada.ali pgada-database.ali
 
 pgada-utils.ali:\
-ada-compile pgada-utils.adb pgada-utils.ads pgada-syntax.ads
+ada-compile pgada-utils.adb pgada.ali pgada-utils.ads pgada-syntax.ali
 	./ada-compile pgada-utils.adb
 
 pgada-utils.o:\
@@ -270,7 +294,7 @@ ada-compile pgada.ads pgada.ads
 pgada.o:\
 pgada.ali
 
-clean-all: obj_clean ext_clean
+clean-all: sysdeps_clean obj_clean ext_clean
 clean: obj_clean
 obj_clean:
 	rm -f ctxt/bindir.c ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.c ctxt/dlibdir.o \

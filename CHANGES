@@ -4,3 +4,4 @@
 20090116 code: removed all 'use' package statements.
 20090116 code: removed obsolete TTY functions.
 20090116 version: postgres-ada 0.1.0
+20090117 code: added database.command_tuples.

@@ -110,6 +110,15 @@ package body PGAda.Database is
     return ICS.Value (PGAda.Thin.PQ_Cmd_Status (Result.Actual));
   end Command_Status;
 
+  --------------------
+  -- Command_Tuples --
+  --------------------
+
+  function Command_Tuples (Result : Result_T) return String is
+  begin
+    return ICS.Value (PGAda.Thin.PQ_Cmd_Tuples (Result.Actual));
+  end Command_Tuples;
+
   --------
   -- DB --
   --------
