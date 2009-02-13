@@ -97,7 +97,7 @@ package PGAda.Thin is
     PG_DIAG_CONTEXT            => 87,
     PG_DIAG_INTERNAL_POSITION  => 112,
     PG_DIAG_INTERNAL_QUERY     => 113);
-  for Error_Field'size use C.int'size;
+  for Error_Field'Size use C.int'Size;
 
   function PQ_Set_Db_Login
    (PG_Host    : CS.chars_ptr;

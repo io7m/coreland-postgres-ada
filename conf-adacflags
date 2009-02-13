@@ -1,4 +1,4 @@
--O2 -g -fstack-check -gnatwaleG -gnatVa -gnato -gnata -gnatW8 -gnatiw -gnaty2AbdefhikprStu
+-O2 -g -fstack-check -gnatwaleG -gnatVa -gnato -gnata -gnatW8 -gnatiw -gnaty2aAbdefhiklprStu
 
 The first line of this file is passed to the Ada compiler as extra flags.
 

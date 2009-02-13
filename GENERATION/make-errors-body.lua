@@ -39,7 +39,7 @@ io.write ([[
 ]])
 
 for index, pair in pairs (lines) do
-  io.write ("    (code => str_"..pair.name.."'access, value => "
+  io.write ("    (code => str_"..pair.name.."'Access, value => "
     ..pair.name..")")
 
   if index == table.maxn (lines) then
@@ -55,7 +55,7 @@ io.write ([[
   function Error_Value (code : string)
     return Error_Value_t is
   begin
-    for index in error_codes'range loop
+    for index in error_codes'Range loop
       if error_codes (index).code.all = code then
         return error_codes (index).value;
       end if;
