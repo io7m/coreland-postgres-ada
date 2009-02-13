@@ -34,7 +34,7 @@ struct install_item {
   int perm;
 };
 
-struct install_status_t install_init (void);
+struct install_status_t install_init (const char *);
 struct install_status_t install (struct install_item *, unsigned int);
 struct install_status_t install_check (struct install_item *);
 struct install_status_t deinstall (struct install_item *, unsigned int);

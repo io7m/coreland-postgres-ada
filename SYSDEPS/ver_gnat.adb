@@ -1,175 +1,123 @@
--- Detect GNAT version
+-- auto generated, do not edit
 
-with ada.exceptions;
-with ada.strings.fixed;
-with ada.strings.bounded;
-with ada.strings;
-with ada.text_io;
 with gnat.compiler_version;
+with gnat.regpat;
+with ada.text_io;
+with ada.strings.fixed;
+with ada.strings;
 
 procedure ver_gnat is
-  package ex renames ada.exceptions;
-  package io renames ada.text_io;
-  package str renames ada.strings;
-  package str_fixed renames ada.strings.fixed;
-  package version_strings is new ada.strings.bounded.generic_bounded_length (16);
+
+  --
+  -- gnatver.ads
+  --
+
+
+  type variant_t is
+    (GNAT_UNKNOWN,
+     GNAT_FSF,
+     GNAT_GPL,
+     GNAT_PRO,
+     GNAT_GAP);
+
+  type version_t is record
+    variant : variant_t := GNAT_UNKNOWN;
+    major   : natural   := 0;
+    minor   : natural   := 0;
+    patch   : natural   := 0;
+  end record;
+
+  procedure decode
+    (version : out version_t;
+     image   : in string);
+
+  procedure decode_current
+    (version : out version_t);
+
+
+  --
+  -- gnatver.adb
+  --
+
   package ver is new gnat.compiler_version;
-
-  parse_error : exception;
-  subtype version_name_t is version_strings.bounded_string;
-
-  procedure version_parse
-    (version_raw   : string;
-     version_name  : out version_name_t;
-     version_major : out integer;
-     version_minor : out integer;
-     version_patch : out integer)
+  use type gnat.regpat.match_location;
+  regex_FSF : constant string := "^(GNAT Version: ){0,1}([0-9]).([0-9]).([0-9])";
+  regex_GPL : constant string := "^(GNAT Version: ){0,1}GPL [0-9]+ \(([0-9]{4})([0-9]{2})([0-9]{2})\)";
+  regex_GAP : constant string := "^(GNAT Version: ){0,1}GAP [0-9]+ \(([0-9]{4})([0-9]{2})([0-9]{2})\)";
+  regex_Pro : constant string := "^(GNAT Version: ){0,1}Pro ([0-9]).([0-9]).([0-9])";
+  procedure decode
+    (version : out version_t;
+     image   : in string)
   is
-    version_tmp : string := version_raw;
-    fsf_prefix  : constant string := "GNAT Version: ";
-    gpl_prefix  : constant string := "GPL ";
-
-    -- does the version string have a non-numeric prefix?
-    function have_prefix (str : string) return boolean
-    is
-      char : constant character := str (str'first);
-    begin
-      return (char < '0') or (char > '9');
-    end have_prefix;
-
-    -- find first non numeric character in string
-    procedure first_non_numeric
-      (str      : string;
-       position : out positive;
-       found    : out boolean) is
-    begin
-      for index in str'range loop
-        declare
-          char : constant character := str (index);
-        begin
-          if (char < '0') or (char > '9') then
-            position := index;
-            found := true;
-            return;
-          end if;
-        end;
-      end loop;
-      found := false;
-    end first_non_numeric;
-
-    -- remove GNAT version prefix if necessary
-    procedure remove_prefix
-      (version : in out string;
-       prefix  : string;
-       removed : out boolean) is
-    begin
-      if version'length >= prefix'length then
-        if version (version'first .. prefix'length) = prefix then
-          str_fixed.delete (version, version'first, prefix'length);
-          removed := true;
-          return;
-        end if;
-      end if;
-      removed := false;
-    end remove_prefix;
-
-    -- expects strings of the form "N.N.N"
-    procedure parse_fsf is
-      str_tmp : string := version_tmp;
-    begin
-      -- consume major
-      declare
-        dot : constant integer := str_fixed.index (str_tmp, ".");
-      begin
-        version_major := integer'value (str_tmp (str_tmp'first .. dot - 1));
-        str_fixed.delete (str_tmp, str_tmp'first, dot);
-      end;
-
-      -- consume minor
-      declare
-        dot : constant integer := str_fixed.index (str_tmp, ".");
-      begin
-        version_minor := integer'value (str_tmp (str_tmp'first .. dot - 1));
-        str_fixed.delete (str_tmp, str_tmp'first, dot);
-      end;
- 
-      -- consume patch
-      declare
-        found    : boolean;
-        position : positive;
-      begin
-        first_non_numeric (str_tmp, position, found);
-        if found then
-          version_patch := integer'value (str_tmp (str_tmp'first .. position - 1));
-        end if;
-      end;
-    exception
-      when others => raise parse_error with "error parsing FSF version string";
-    end parse_fsf;
-
-    -- expects strings of the form "YYYY (YYYYMMDD)" eg. "2008 (20080521)"
-    procedure parse_gpl is
-      year : constant string :=
-        version_tmp (version_tmp'first .. str_fixed.index (version_tmp, " "));
-    begin
-      version_major := integer'value (year);
-    exception
-      when others => raise parse_error with "error parsing GPL version string";
-    end parse_gpl;
-
-    removed : boolean;
+    matches : gnat.regpat.match_array (0 .. 4);
   begin
-    version_name  := version_strings.to_bounded_string ("GNAT");
-    version_major := 0;
-    version_minor := 0;
-    version_patch := 0;
-
-    -- FSF GNAT appears to have no prefix on some platforms
-    if have_prefix (version_tmp) then
-      remove_prefix (version_tmp, fsf_prefix, removed);
-      if removed then
-        version_name := version_strings.to_bounded_string ("GNAT_FSF");
-        parse_fsf;
-        return;
-      end if;
-
-      remove_prefix (version_tmp, gpl_prefix, removed);
-      if removed then
-        version_name := version_strings.to_bounded_string ("GNAT_GPL");
-        parse_gpl;
-        return;
-      end if;
-    else
-      version_name := version_strings.to_bounded_string ("GNAT_FSF");
-      parse_fsf;
-      return;
+    -- check FSF
+    gnat.regpat.match
+      (expression => regex_FSF,
+       data       => image,
+       matches    => matches);
+    if matches (0) /= gnat.regpat.no_match then
+      version.variant := GNAT_FSF;
+      version.major   := natural'value (image (matches (2).first ..  matches (2).last));
+      version.minor   := natural'value (image (matches (3).first ..  matches (3).last));
+      version.patch   := natural'value (image (matches (4).first ..  matches (4).last));
     end if;
-  end version_parse;
+    -- check GPL
+    gnat.regpat.match
+      (expression => regex_GPL,
+       data       => image,
+       matches    => matches);
+    if matches (0) /= gnat.regpat.no_match then
+      version.variant := GNAT_GPL;
+      version.major   := natural'value (image (matches (2).first ..  matches (2).last));
+      version.minor   := natural'value (image (matches (3).first ..  matches (3).last));
+      version.patch   := natural'value (image (matches (4).first ..  matches (4).last));
+    end if;
+    -- check GAP
+    gnat.regpat.match
+      (expression => regex_GAP,
+       data       => image,
+       matches    => matches);
+    if matches (0) /= gnat.regpat.no_match then
+      version.variant := GNAT_GAP;
+      version.major   := natural'value (image (matches (2).first ..  matches (2).last));
+      version.minor   := natural'value (image (matches (3).first ..  matches (3).last));
+      version.patch   := natural'value (image (matches (4).first ..  matches (4).last));
+    end if;
+    -- check Pro
+    gnat.regpat.match
+      (expression => regex_Pro,
+       data       => image,
+       matches    => matches);
+    if matches (0) /= gnat.regpat.no_match then
+      version.variant := GNAT_PRO;
+      version.major   := natural'value (image (matches (2).first ..  matches (2).last));
+      version.minor   := natural'value (image (matches (3).first ..  matches (3).last));
+      version.patch   := natural'value (image (matches (4).first ..  matches (4).last));
+    end if;
+  end decode;
+  procedure decode_current
+    (version : out version_t) is
+  begin
+    decode
+      (version => version,
+       image   => ver.version);
+  end decode_current;
+
+
+  -- ver_gnat.adb
 
   function to_string (num : integer) return string is
   begin
-    return str_fixed.trim (integer'image (num), str.left);
+    return ada.strings.fixed.trim (integer'image (num), ada.strings.left);
   end to_string;
 
-  -- data
-  ver_input : constant string := ver.version;
-  ver_name  : version_name_t;
-  ver_major : integer;
-  ver_minor : integer;
-  ver_patch : integer;
+  version : version_t;
 begin
-
-  -- catch parse errors
-  begin
-    version_parse (ver_input, ver_name, ver_major, ver_minor, ver_patch);
-  exception
-    when e: parse_error =>
-      io.put_line (io.current_error, "error: " & ex.exception_message (e));
-  end;
-
-  io.put_line
-    ("SYSDEP_ADA_TYPE_" & version_strings.to_string (ver_name) & " " &
-     to_string (ver_major) & "." &
-     to_string (ver_minor) & "." &
-     to_string (ver_patch));
+  decode_current (version);
+  ada.text_io.put_line
+    (variant_t'image (version.variant) & " " &
+     to_string (version.major) & "." &
+     to_string (version.minor) & "." &
+     to_string (version.patch));
 end ver_gnat;

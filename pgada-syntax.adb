@@ -37,38 +37,37 @@
 
 package body PGAda.Syntax is
 
-   ------------
-   -- Escape --
-   ------------
+  ------------
+  -- Escape --
+  ------------
 
-   function Escape (S : String) return String
-   is
-      Result : String (1 .. S'Length * 2);
-      Last   : Natural := 0;
-   begin
-      for I in S'Range loop
-         if S (I) = ''' then
-            Last := Last + 1;
-            Result (Last) := '\';
-         end if;
-         Last := Last + 1;
-         Result (Last) := S (I);
-      end loop;
-      return ''' & Result (1 .. Last) & ''';
-   end Escape;
-
-   -----------
-   -- Image --
-   -----------
-
-   function Image (I : Integer) return String is
-      S : constant String := Integer'Image (I);
-   begin
-      if S (1) = ' ' then
-         return S (1 .. S'Last);
-      else
-         return S;
+  function Escape (S : String) return String is
+    Result : String (1 .. S'Length * 2);
+    Last   : Natural := 0;
+  begin
+    for I in S'Range loop
+      if S (I) = ''' then
+        Last := Last + 1;
+        Result (Last) := '\';
       end if;
-   end Image;
+      Last := Last + 1;
+      Result (Last) := S (I);
+    end loop;
+    return ''' & Result (1 .. Last) & ''';
+  end Escape;
+
+  -----------
+  -- Image --
+  -----------
+
+  function Image (I : Integer) return String is
+    S : constant String := Integer'Image (I);
+  begin
+    if S (1) = ' ' then
+      return S (1 .. S'Last);
+    else
+      return S;
+    end if;
+  end Image;
 
 end PGAda.Syntax;

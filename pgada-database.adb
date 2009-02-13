@@ -46,11 +46,11 @@ package body PGAda.Database is
   use type ICS.chars_ptr;
   use type IC.int;
 
-  use type PGAda.Thin.PG_Conn_Access_T;
-  use type PGAda.Thin.PG_Result_Access_T;
+  use type PGAda.Thin.PG_Conn_Access_t;
+  use type PGAda.Thin.PG_Result_Access_t;
 
   Exec_Status_Match :
-   constant array (Thin.Exec_Status_T) of Exec_Status_T :=
+   constant array (Thin.Exec_Status_t) of Exec_Status_t :=
     (PGAda.Thin.PGRES_EMPTY_QUERY   => Empty_Query,
      PGAda.Thin.PGRES_COMMAND_OK    => Command_OK,
      PGAda.Thin.PGRES_TUPLES_OK    => Tuples_OK,
@@ -73,7 +73,7 @@ package body PGAda.Database is
   -- Adjust --
   ------------
 
-  procedure Adjust (Result : in out Result_T) is
+  procedure Adjust (Result : in out Result_t) is
   begin
     Result.Ref_Count.all := Result.Ref_Count.all + 1;
   end Adjust;
@@ -95,7 +95,7 @@ package body PGAda.Database is
   -- Clear --
   -----------
 
-  procedure Clear (Result : in out Result_T) is
+  procedure Clear (Result : in out Result_t) is
   begin
     PGAda.Thin.PQ_Clear (Result.Actual);
     Result.Actual := null;
@@ -105,7 +105,7 @@ package body PGAda.Database is
   -- Command_Status --
   --------------------
 
-  function Command_Status (Result : Result_T) return String is
+  function Command_Status (Result : Result_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Cmd_Status (Result.Actual));
   end Command_Status;
@@ -114,7 +114,7 @@ package body PGAda.Database is
   -- Command_Tuples --
   --------------------
 
-  function Command_Tuples (Result : Result_T) return String is
+  function Command_Tuples (Result : Result_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Cmd_Tuples (Result.Actual));
   end Command_Tuples;
@@ -123,7 +123,7 @@ package body PGAda.Database is
   -- DB --
   --------
 
-  function DB (Connection : Connection_T) return String is
+  function DB (Connection : Connection_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Db (Connection.Actual));
   end DB;
@@ -132,7 +132,7 @@ package body PGAda.Database is
   -- Error_Message --
   -------------------
 
-  function Error_Message (Connection : Connection_T) return String is
+  function Error_Message (Connection : Connection_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Error_Message (Connection.Actual));
   end Error_Message;
@@ -141,11 +141,11 @@ package body PGAda.Database is
   -- Error_Message --
   -------------------
 
-  function Error_Message (Result : Result_T) return string is
+  function Error_Message (Result : Result_t) return string is
   begin
-   return Result_Error_Field
-    (Result => Result,
-     Field  => PGAda.Thin.PG_DIAG_MESSAGE_PRIMARY);
+    return Result_Error_Field
+      (Result => Result,
+       Field  => PGAda.Thin.PG_DIAG_MESSAGE_PRIMARY);
   end Error_Message;
 
   ----------
@@ -153,10 +153,10 @@ package body PGAda.Database is
   ----------
 
   procedure Exec
-   (Connection : in Connection_T'Class;
+   (Connection : in Connection_t'Class;
     Query    : in String;
-    Result    : out Result_T;
-    Status    : out Exec_Status_T)
+    Result    : out Result_t;
+    Status    : out Exec_Status_t)
   is
     C_Query : ICS.chars_ptr := ICS.New_String (Query);
   begin
@@ -170,9 +170,9 @@ package body PGAda.Database is
   ----------
 
   procedure Exec
-   (Connection : in Connection_T'Class;
+   (Connection : in Connection_t'Class;
     Query    : in String;
-    Result    : out Result_T)
+    Result    : out Result_t)
   is
     C_Query : ICS.chars_ptr := ICS.New_String (Query);
   begin
@@ -185,10 +185,10 @@ package body PGAda.Database is
   ----------
 
   function Exec
-   (Connection : Connection_T'Class;
-    Query    : String) return Result_T
+   (Connection : Connection_t'Class;
+    Query    : String) return Result_t
   is
-    Result : Result_T;
+    Result : Result_t;
   begin
     Exec (Connection, Query, Result);
     return Result;
@@ -199,12 +199,15 @@ package body PGAda.Database is
   ----------
 
   procedure Exec
-   (Connection : in Connection_T'Class;
-    Query    : in String)
+   (Connection : in Connection_t'Class;
+    Query      : in String)
   is
-    Result : Result_T;
+    Result : Result_t;
   begin
+    -- Result value ignored by call
+    pragma Warnings (off);
     Exec (Connection, Query, Result);
+    pragma Warnings (on);
   end Exec;
 
   ----------------
@@ -212,7 +215,7 @@ package body PGAda.Database is
   ----------------
 
   function Field_Name
-   (Result    : Result_T;
+   (Result      : Result_t;
     Field_Index : Positive) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_F_Name (Result.Actual, IC.int (Field_Index) - 1));
@@ -222,7 +225,7 @@ package body PGAda.Database is
   -- Finalize --
   --------------
 
-  procedure Finalize (Connection : in out Connection_T) is
+  procedure Finalize (Connection : in out Connection_t) is
   begin
     if Connection.Actual /= null then
       Finish (Connection);
@@ -233,9 +236,9 @@ package body PGAda.Database is
   -- Finalize --
   --------------
 
-  procedure Finalize (Result : in out Result_T) is
+  procedure Finalize (Result : in out Result_t) is
     procedure Free is
-      new Ada.Unchecked_Deallocation (Natural, Natural_Access_T);
+      new Ada.Unchecked_Deallocation (Natural, Natural_Access_t);
   begin
     Result.Ref_Count.all := Result.Ref_Count.all - 1;
     if Result.Ref_Count.all = 0 and then Result.Actual /= null then
@@ -248,7 +251,7 @@ package body PGAda.Database is
   -- Finish --
   ------------
 
-  procedure Finish (Connection : in out Connection_T) is
+  procedure Finish (Connection : in out Connection_t) is
   begin
     PGAda.Thin.PQ_Finish (Connection.Actual);
     Connection.Actual := null;
@@ -270,7 +273,7 @@ package body PGAda.Database is
   ----------------
 
   function Get_Length
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Index : Positive) return Natural is
   begin
@@ -283,7 +286,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Index : Positive) return String is
   begin
@@ -296,7 +299,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Name  : String) return String
   is
@@ -314,7 +317,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Index : Positive) return Integer is
   begin
@@ -326,7 +329,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Name  : String) return Integer is
   begin
@@ -338,7 +341,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Index : Positive) return Long_Integer is
   begin
@@ -350,7 +353,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Name  : String) return Long_Integer is
   begin
@@ -362,7 +365,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Index : Positive) return Long_Long_Integer is
   begin
@@ -375,7 +378,7 @@ package body PGAda.Database is
   ---------------
 
   function Get_Value
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Name  : String) return Long_Long_Integer is
   begin
@@ -387,7 +390,7 @@ package body PGAda.Database is
   -- Host --
   ----------
 
-  function Host (Connection : Connection_T) return String is
+  function Host (Connection : Connection_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Host (Connection.Actual));
   end Host;
@@ -397,7 +400,7 @@ package body PGAda.Database is
   -------------
 
   function Is_Null
-   (Result    : Result_T;
+   (Result    : Result_t;
     Tuple_Index : Positive;
     Field_Index : Positive) return Boolean is
   begin
@@ -409,7 +412,7 @@ package body PGAda.Database is
   -- Nbr_Fields --
   ----------------
 
-  function Nbr_Fields (Result : Result_T) return Natural is
+  function Nbr_Fields (Result : Result_t) return Natural is
   begin
     return Natural (PGAda.Thin.PQ_N_Fields (Result.Actual));
   end Nbr_Fields;
@@ -418,7 +421,7 @@ package body PGAda.Database is
   -- Nbr_Tuples --
   ----------------
 
-  function Nbr_Tuples (Result : Result_T) return Natural is
+  function Nbr_Tuples (Result : Result_t) return Natural is
   begin
     return Natural (PGAda.Thin.PQ_N_Tuples (Result.Actual));
   end Nbr_Tuples;
@@ -427,7 +430,7 @@ package body PGAda.Database is
   -- OID_Status --
   ----------------
 
-  function OID_Status (Result : Result_T) return String is
+  function OID_Status (Result : Result_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Oid_Status (Result.Actual));
   end OID_Status;
@@ -436,7 +439,7 @@ package body PGAda.Database is
   -- Options --
   -------------
 
-  function Options (Connection : Connection_T) return String is
+  function Options (Connection : Connection_t) return String is
   begin
     return ICS.Value (PGAda.Thin.PQ_Options (Connection.Actual));
   end Options;
@@ -445,7 +448,7 @@ package body PGAda.Database is
   -- Port --
   ----------
 
-  function Port (Connection : Connection_T) return Positive is
+  function Port (Connection : Connection_t) return Positive is
   begin
     return Positive'Value (ICS.Value (PGAda.Thin.PQ_Port (Connection.Actual)));
   end Port;
@@ -454,7 +457,7 @@ package body PGAda.Database is
   -- Reset --
   -----------
 
-  procedure Reset (Connection : in Connection_T) is
+  procedure Reset (Connection : in Connection_t) is
   begin
     PGAda.Thin.PQ_Reset (Connection.Actual);
   end Reset;
@@ -463,7 +466,7 @@ package body PGAda.Database is
   -- Result_Status --
   -------------------
 
-  function Result_Status (Result : Result_T) return Exec_Status_T is
+  function Result_Status (Result : Result_t) return Exec_Status_t is
   begin
     return Exec_Status_Match (PGAda.Thin.PQ_Result_Status (Result.Actual));
   end Result_Status;
@@ -473,28 +476,28 @@ package body PGAda.Database is
   ------------------------
 
   function Result_Error_Field
-  (Result : Result_T;
+  (Result : Result_t;
    Field  : Error_Field) return string
   is
-   C_Res : constant ICS.chars_ptr :=
-    PGAda.Thin.PQ_Result_Error_Field (Result.actual, Field);
+    C_Res : constant ICS.chars_ptr :=
+      PGAda.Thin.PQ_Result_Error_Field (Result.Actual, Field);
   begin
-   if C_Res = ICS.Null_Ptr then
-    return "";
-   else
-    return ICS.Value (C_Res);
-   end if;
+    if C_Res = ICS.Null_Ptr then
+      return "";
+    else
+      return ICS.Value (C_Res);
+    end if;
   end Result_Error_Field;
 
   ----------------
   -- Error_Code --
   ----------------
 
-  function Error_Code (Result : Result_T)
-   return PGAda.Errors.Error_Value_t is
+  function Error_Code (Result : Result_t)
+    return PGAda.Errors.Error_Value_t is
   begin
-   return PGAda.Errors.Error_Value
-    (Result_Error_Field (Result, PGAda.Thin.PG_DIAG_SQLSTATE));
+    return PGAda.Errors.Error_Value
+      (Result_Error_Field (Result, PGAda.Thin.PG_DIAG_SQLSTATE));
   end Error_Code;
 
   ------------------
@@ -502,7 +505,7 @@ package body PGAda.Database is
   ------------------
 
   procedure Set_DB_Login
-   (Connection : in out Connection_T;
+   (Connection : in out Connection_t;
     Host       : in String  := "";
     Port       : in Natural := 0;
     Options    : in String  := "";
@@ -550,15 +553,11 @@ package body PGAda.Database is
   -- Status --
   ------------
 
-  function Status (Connection : Connection_T) return Connection_Status_T is
+  function Status (Connection : Connection_t) return Connection_Status_t is
   begin
     case PGAda.Thin.PQ_Status (Connection.Actual) is
-      when PGAda.Thin.CONNECTION_OK =>
-        return Connection_OK;
-      when PGAda.Thin.CONNECTION_BAD =>
-        return Connection_Bad;
-      when others =>
-        raise Constraint_Error;
+      when PGAda.Thin.CONNECTION_OK  => return Connection_OK;
+      when PGAda.Thin.CONNECTION_BAD => return Connection_Bad;
     end case;
   end Status;
 

@@ -7,390 +7,390 @@ package body PGAda.Errors is
     value : Error_Value_t;
   end record;
 
-  str_successful_completion : aliased constant string := "00000";
-  str_warning : aliased constant string := "01000";
-  str_warn_dynamic_result_sets_returned : aliased constant string := "0100C";
-  str_warn_implicit_zero_bit_padding : aliased constant string := "01008";
-  str_warn_null_value_eliminated_in_set_function : aliased constant string := "01003";
-  str_warn_privilege_not_granted : aliased constant string := "01007";
-  str_warn_privilege_not_revoked : aliased constant string := "01006";
-  str_warn_string_data_right_truncation : aliased constant string := "01004";
-  str_deprecated_feature : aliased constant string := "01P01";
-  str_no_data : aliased constant string := "02000";
-  str_no_additional_dynamic_result_sets_returned : aliased constant string := "02001";
-  str_sql_statement_not_yet_complete : aliased constant string := "03000";
-  str_connection_exception : aliased constant string := "08000";
-  str_connection_does_not_exist : aliased constant string := "08003";
-  str_connection_failure : aliased constant string := "08006";
-  str_sqlclient_unable_to_establish_sqlconnection : aliased constant string := "08001";
-  str_sqlserver_rejected_establishment_of_sqlconnection : aliased constant string := "08004";
-  str_transaction_resolution_unknown : aliased constant string := "08007";
-  str_protocol_violation : aliased constant string := "08P01";
-  str_triggered_action_exception : aliased constant string := "09000";
-  str_feature_not_supported : aliased constant string := "0A000";
-  str_invalid_transaction_initiation : aliased constant string := "0B000";
-  str_locator_exception : aliased constant string := "0F000";
-  str_invalid_locator_specification : aliased constant string := "0F001";
-  str_invalid_grantor : aliased constant string := "0L000";
-  str_invalid_grant_operation : aliased constant string := "0LP01";
-  str_invalid_role_specification : aliased constant string := "0P000";
-  str_cardinality_violation : aliased constant string := "21000";
-  str_data_exception : aliased constant string := "22000";
-  str_array_subscript_error : aliased constant string := "2202E";
-  str_character_not_in_repertoire : aliased constant string := "22021";
-  str_datetime_field_overflow : aliased constant string := "22008";
-  str_division_by_zero : aliased constant string := "22012";
-  str_error_in_assignment : aliased constant string := "22005";
-  str_escape_character_conflict : aliased constant string := "2200B";
-  str_indicator_overflow : aliased constant string := "22022";
-  str_interval_field_overflow : aliased constant string := "22015";
-  str_invalid_argument_for_logarithm : aliased constant string := "2201E";
-  str_invalid_argument_for_power_function : aliased constant string := "2201F";
-  str_invalid_argument_for_width_bucket_function : aliased constant string := "2201G";
-  str_invalid_character_value_for_cast : aliased constant string := "22018";
-  str_invalid_datetime_format : aliased constant string := "22007";
-  str_invalid_escape_character : aliased constant string := "22019";
-  str_invalid_escape_octet : aliased constant string := "2200D";
-  str_invalid_escape_sequence : aliased constant string := "22025";
-  str_nonstandard_use_of_escape_character : aliased constant string := "22P06";
-  str_invalid_indicator_parameter_value : aliased constant string := "22010";
-  str_invalid_limit_value : aliased constant string := "22020";
-  str_invalid_parameter_value : aliased constant string := "22023";
-  str_invalid_regular_expression : aliased constant string := "2201B";
-  str_invalid_time_zone_displacement_value : aliased constant string := "22009";
-  str_invalid_use_of_escape_character : aliased constant string := "2200C";
-  str_most_specific_type_mismatch : aliased constant string := "2200G";
-  str_null_value_not_allowed : aliased constant string := "22004";
-  str_null_value_no_indicator_parameter : aliased constant string := "22002";
-  str_numeric_value_out_of_range : aliased constant string := "22003";
-  str_string_data_length_mismatch : aliased constant string := "22026";
-  str_string_data_right_truncation : aliased constant string := "22001";
-  str_substring_error : aliased constant string := "22011";
-  str_trim_error : aliased constant string := "22027";
-  str_unterminated_c_string : aliased constant string := "22024";
-  str_zero_length_character_string : aliased constant string := "2200F";
-  str_floating_point_exception : aliased constant string := "22P01";
-  str_invalid_text_representation : aliased constant string := "22P02";
-  str_invalid_binary_representation : aliased constant string := "22P03";
-  str_bad_copy_file_format : aliased constant string := "22P04";
-  str_untranslatable_character : aliased constant string := "22P05";
-  str_not_an_xml_document : aliased constant string := "2200L";
-  str_invalid_xml_document : aliased constant string := "2200M";
-  str_invalid_xml_content : aliased constant string := "2200N";
-  str_invalid_xml_comment : aliased constant string := "2200S";
-  str_invalid_xml_processing_instruction : aliased constant string := "2200T";
-  str_integrity_constraint_violation : aliased constant string := "23000";
-  str_restrict_violation : aliased constant string := "23001";
-  str_not_null_violation : aliased constant string := "23502";
-  str_foreign_key_violation : aliased constant string := "23503";
-  str_unique_violation : aliased constant string := "23505";
-  str_check_violation : aliased constant string := "23514";
-  str_invalid_cursor_state : aliased constant string := "24000";
-  str_invalid_transaction_state : aliased constant string := "25000";
-  str_active_sql_transaction : aliased constant string := "25001";
-  str_branch_transaction_already_active : aliased constant string := "25002";
-  str_held_cursor_requires_same_isolation_level : aliased constant string := "25008";
-  str_inappropriate_access_mode_for_branch_transaction : aliased constant string := "25003";
-  str_inappropriate_isolation_level_for_branch_transaction : aliased constant string := "25004";
-  str_no_active_sql_transaction_for_branch_transaction : aliased constant string := "25005";
-  str_read_only_sql_transaction : aliased constant string := "25006";
-  str_schema_and_data_statement_mixing_not_supported : aliased constant string := "25007";
-  str_no_active_sql_transaction : aliased constant string := "25P01";
-  str_in_failed_sql_transaction : aliased constant string := "25P02";
-  str_invalid_sql_statement_name : aliased constant string := "26000";
-  str_triggered_data_change_violation : aliased constant string := "27000";
-  str_invalid_authorization_specification : aliased constant string := "28000";
-  str_dependent_privilege_descriptors_still_exist : aliased constant string := "2B000";
-  str_dependent_objects_still_exist : aliased constant string := "2BP01";
-  str_invalid_transaction_termination : aliased constant string := "2D000";
-  str_sre_sql_routine_exception : aliased constant string := "2F000";
-  str_sre_function_executed_no_return_statement : aliased constant string := "2F005";
-  str_sre_modifying_sql_data_not_permitted : aliased constant string := "2F002";
-  str_sre_prohibited_sql_statement_attempted : aliased constant string := "2F003";
-  str_sre_reading_sql_data_not_permitted : aliased constant string := "2F004";
-  str_invalid_cursor_name : aliased constant string := "34000";
-  str_ere_external_routine_exception : aliased constant string := "38000";
-  str_ere_containing_sql_not_permitted : aliased constant string := "38001";
-  str_ere_modifying_sql_data_not_permitted : aliased constant string := "38002";
-  str_ere_prohibited_sql_statement_attempted : aliased constant string := "38003";
-  str_ere_reading_sql_data_not_permitted : aliased constant string := "38004";
-  str_eri_external_routine_invocation_exception : aliased constant string := "39000";
-  str_eri_invalid_sqlstate_returned : aliased constant string := "39001";
-  str_eri_null_value_not_allowed : aliased constant string := "39004";
-  str_eri_trigger_protocol_violated : aliased constant string := "39P01";
-  str_eri_srf_protocol_violated : aliased constant string := "39P02";
-  str_savepoint_exception : aliased constant string := "3B000";
-  str_invalid_savepoint_specification : aliased constant string := "3B001";
-  str_invalid_catalog_name : aliased constant string := "3D000";
-  str_invalid_schema_name : aliased constant string := "3F000";
-  str_transaction_rollback : aliased constant string := "40000";
-  str_transaction_integrity_constraint_violation : aliased constant string := "40002";
-  str_serialization_failure : aliased constant string := "40001";
-  str_statement_completion_unknown : aliased constant string := "40003";
-  str_deadlock_detected : aliased constant string := "40P01";
-  str_syntax_error_or_access_rule_violation : aliased constant string := "42000";
-  str_syntax_error : aliased constant string := "42601";
-  str_insufficient_privilege : aliased constant string := "42501";
-  str_cannot_coerce : aliased constant string := "42846";
-  str_grouping_error : aliased constant string := "42803";
-  str_invalid_foreign_key : aliased constant string := "42830";
-  str_invalid_name : aliased constant string := "42602";
-  str_name_too_long : aliased constant string := "42622";
-  str_reserved_name : aliased constant string := "42939";
-  str_datatype_mismatch : aliased constant string := "42804";
-  str_indeterminate_datatype : aliased constant string := "42P18";
-  str_wrong_object_type : aliased constant string := "42809";
-  str_undefined_column : aliased constant string := "42703";
-  str_undefined_function : aliased constant string := "42883";
-  str_undefined_table : aliased constant string := "42P01";
-  str_undefined_parameter : aliased constant string := "42P02";
-  str_undefined_object : aliased constant string := "42704";
-  str_duplicate_column : aliased constant string := "42701";
-  str_duplicate_cursor : aliased constant string := "42P03";
-  str_duplicate_database : aliased constant string := "42P04";
-  str_duplicate_function : aliased constant string := "42723";
-  str_duplicate_prepared_statement : aliased constant string := "42P05";
-  str_duplicate_schema : aliased constant string := "42P06";
-  str_duplicate_table : aliased constant string := "42P07";
-  str_duplicate_alias : aliased constant string := "42712";
-  str_duplicate_object : aliased constant string := "42710";
-  str_ambiguous_column : aliased constant string := "42702";
-  str_ambiguous_function : aliased constant string := "42725";
-  str_ambiguous_parameter : aliased constant string := "42P08";
-  str_ambiguous_alias : aliased constant string := "42P09";
-  str_invalid_column_reference : aliased constant string := "42P10";
-  str_invalid_column_definition : aliased constant string := "42611";
-  str_invalid_cursor_definition : aliased constant string := "42P11";
-  str_invalid_database_definition : aliased constant string := "42P12";
-  str_invalid_function_definition : aliased constant string := "42P13";
-  str_invalid_prepared_statement_definition : aliased constant string := "42P14";
-  str_invalid_schema_definition : aliased constant string := "42P15";
-  str_invalid_table_definition : aliased constant string := "42P16";
-  str_invalid_object_definition : aliased constant string := "42P17";
-  str_with_check_option_violation : aliased constant string := "44000";
-  str_insufficient_resources : aliased constant string := "53000";
-  str_disk_full : aliased constant string := "53100";
-  str_out_of_memory : aliased constant string := "53200";
-  str_too_many_connections : aliased constant string := "53300";
-  str_program_limit_exceeded : aliased constant string := "54000";
-  str_statement_too_complex : aliased constant string := "54001";
-  str_too_many_columns : aliased constant string := "54011";
-  str_too_many_arguments : aliased constant string := "54023";
-  str_object_not_in_prerequisite_state : aliased constant string := "55000";
-  str_object_in_use : aliased constant string := "55006";
-  str_cant_change_runtime_param : aliased constant string := "55P02";
-  str_lock_not_available : aliased constant string := "55P03";
-  str_operator_intervention : aliased constant string := "57000";
-  str_query_canceled : aliased constant string := "57014";
-  str_admin_shutdown : aliased constant string := "57P01";
-  str_crash_shutdown : aliased constant string := "57P02";
-  str_cannot_connect_now : aliased constant string := "57P03";
-  str_io_error : aliased constant string := "58030";
-  str_undefined_file : aliased constant string := "58P01";
-  str_duplicate_file : aliased constant string := "58P02";
-  str_config_file_error : aliased constant string := "F0000";
-  str_lock_file_exists : aliased constant string := "F0001";
-  str_plpgsql_error : aliased constant string := "P0000";
-  str_raise_exception : aliased constant string := "P0001";
-  str_no_data_found : aliased constant string := "P0002";
-  str_too_many_rows : aliased constant string := "P0003";
-  str_internal_error : aliased constant string := "XX000";
-  str_data_corrupted : aliased constant string := "XX001";
-  str_index_corrupted : aliased constant string := "XX002";
-  str_unknown_error : aliased constant string := "ZZZZZ";
+  str_Successful_Completion : aliased constant string := "00000";
+  str_Warning : aliased constant string := "01000";
+  str_Warn_Dynamic_Result_Sets_Returned : aliased constant string := "0100C";
+  str_Warn_Implicit_Zero_Bit_Padding : aliased constant string := "01008";
+  str_Warn_Null_Value_Eliminated_In_Set_Function : aliased constant string := "01003";
+  str_Warn_Privilege_Not_Granted : aliased constant string := "01007";
+  str_Warn_Privilege_Not_Revoked : aliased constant string := "01006";
+  str_Warn_String_Data_Right_Truncation : aliased constant string := "01004";
+  str_Deprecated_Feature : aliased constant string := "01P01";
+  str_No_Data : aliased constant string := "02000";
+  str_No_Additional_Dynamic_Result_Sets_Returned : aliased constant string := "02001";
+  str_SQL_Statement_Not_Yet_Complete : aliased constant string := "03000";
+  str_Connection_Exception : aliased constant string := "08000";
+  str_Connection_Does_Not_Exist : aliased constant string := "08003";
+  str_Connection_Failure : aliased constant string := "08006";
+  str_SQL_Client_Unable_To_Establish_SQL_Connection : aliased constant string := "08001";
+  str_SQL_Server_Rejected_Establishment_Of_SQL_Connection : aliased constant string := "08004";
+  str_Transaction_Resolution_Unknown : aliased constant string := "08007";
+  str_Protocol_Violation : aliased constant string := "08P01";
+  str_Triggered_Action_Exception : aliased constant string := "09000";
+  str_Feature_Not_Supported : aliased constant string := "0A000";
+  str_Invalid_Transaction_Initiation : aliased constant string := "0B000";
+  str_Locator_Exception : aliased constant string := "0F000";
+  str_Invalid_Locator_Specification : aliased constant string := "0F001";
+  str_Invalid_Grantor : aliased constant string := "0L000";
+  str_Invalid_Grant_Operation : aliased constant string := "0LP01";
+  str_Invalid_Role_Specification : aliased constant string := "0P000";
+  str_Cardinality_Violation : aliased constant string := "21000";
+  str_Data_Exception : aliased constant string := "22000";
+  str_Array_Subscript_Error : aliased constant string := "2202E";
+  str_Character_Not_In_Repertoire : aliased constant string := "22021";
+  str_Datetime_Field_Overflow : aliased constant string := "22008";
+  str_Division_By_Zero : aliased constant string := "22012";
+  str_Error_In_Assignment : aliased constant string := "22005";
+  str_Escape_Character_Conflict : aliased constant string := "2200B";
+  str_Indicator_Overflow : aliased constant string := "22022";
+  str_Interval_Field_Overflow : aliased constant string := "22015";
+  str_Invalid_Argument_For_Logarithm : aliased constant string := "2201E";
+  str_Invalid_Argument_For_Power_Function : aliased constant string := "2201F";
+  str_Invalid_Argument_For_Width_Bucket_Function : aliased constant string := "2201G";
+  str_Invalid_Character_Value_For_Cast : aliased constant string := "22018";
+  str_Invalid_Datetime_Format : aliased constant string := "22007";
+  str_Invalid_Escape_Character : aliased constant string := "22019";
+  str_Invalid_Escape_Octet : aliased constant string := "2200D";
+  str_Invalid_Escape_Sequence : aliased constant string := "22025";
+  str_Nonstandard_Use_Of_Escape_Character : aliased constant string := "22P06";
+  str_Invalid_Indicator_Parameter_Value : aliased constant string := "22010";
+  str_Invalid_Limit_Value : aliased constant string := "22020";
+  str_Invalid_Parameter_Value : aliased constant string := "22023";
+  str_Invalid_Regular_Expression : aliased constant string := "2201B";
+  str_Invalid_Time_Zone_Displacement_Value : aliased constant string := "22009";
+  str_Invalid_Use_Of_Escape_Character : aliased constant string := "2200C";
+  str_Most_Specific_Type_Mismatch : aliased constant string := "2200G";
+  str_Null_Value_Not_Allowed : aliased constant string := "22004";
+  str_Null_Value_No_Indicator_Parameter : aliased constant string := "22002";
+  str_Numeric_Value_Out_Of_Range : aliased constant string := "22003";
+  str_String_Data_Length_Mismatch : aliased constant string := "22026";
+  str_String_Data_Right_Truncation : aliased constant string := "22001";
+  str_Substring_Error : aliased constant string := "22011";
+  str_Trim_Error : aliased constant string := "22027";
+  str_Unterminated_C_String : aliased constant string := "22024";
+  str_Zero_Length_Character_String : aliased constant string := "2200F";
+  str_Floating_Point_Exception : aliased constant string := "22P01";
+  str_Invalid_Text_Representation : aliased constant string := "22P02";
+  str_Invalid_Binary_Representation : aliased constant string := "22P03";
+  str_Bad_Copy_File_Format : aliased constant string := "22P04";
+  str_Untranslatable_Character : aliased constant string := "22P05";
+  str_Not_An_XML_Document : aliased constant string := "2200L";
+  str_Invalid_XML_Document : aliased constant string := "2200M";
+  str_Invalid_XML_Content : aliased constant string := "2200N";
+  str_Invalid_XML_Comment : aliased constant string := "2200S";
+  str_Invalid_XML_Processing_Instruction : aliased constant string := "2200T";
+  str_Integrity_Constraint_Violation : aliased constant string := "23000";
+  str_Restrict_Violation : aliased constant string := "23001";
+  str_Not_Null_Violation : aliased constant string := "23502";
+  str_Foreign_Key_Violation : aliased constant string := "23503";
+  str_Unique_Violation : aliased constant string := "23505";
+  str_Check_Violation : aliased constant string := "23514";
+  str_Invalid_Cursor_State : aliased constant string := "24000";
+  str_Invalid_Transaction_State : aliased constant string := "25000";
+  str_Active_SQL_Transaction : aliased constant string := "25001";
+  str_Branch_Transaction_Already_Active : aliased constant string := "25002";
+  str_Held_Cursor_Requires_Same_Isolation_Level : aliased constant string := "25008";
+  str_Inappropriate_Access_Mode_For_Branch_Transaction : aliased constant string := "25003";
+  str_Inappropriate_Isolation_Level_For_Branch_Transaction : aliased constant string := "25004";
+  str_No_Active_SQL_Transaction_For_Branch_Transaction : aliased constant string := "25005";
+  str_Read_Only_SQL_Transaction : aliased constant string := "25006";
+  str_Schema_And_Data_Statement_Mixing_Not_Supported : aliased constant string := "25007";
+  str_No_Active_SQL_Transaction : aliased constant string := "25P01";
+  str_In_Failed_SQL_Transaction : aliased constant string := "25P02";
+  str_Invalid_SQL_Statement_Name : aliased constant string := "26000";
+  str_Triggered_Data_Change_Violation : aliased constant string := "27000";
+  str_Invalid_Authorization_Specification : aliased constant string := "28000";
+  str_Dependent_Privilege_Descriptors_Still_Exist : aliased constant string := "2B000";
+  str_Dependent_Objects_Still_Exist : aliased constant string := "2BP01";
+  str_Invalid_Transaction_Termination : aliased constant string := "2D000";
+  str_SRE_SQL_Routine_Exception : aliased constant string := "2F000";
+  str_SRE_Function_Executed_No_Return_Statement : aliased constant string := "2F005";
+  str_SRE_Modifying_SQL_Data_Not_Permitted : aliased constant string := "2F002";
+  str_SRE_Prohibited_SQL_Statement_Attempted : aliased constant string := "2F003";
+  str_SRE_Reading_SQL_Data_Not_Permitted : aliased constant string := "2F004";
+  str_Invalid_Cursor_Name : aliased constant string := "34000";
+  str_ERE_External_Routine_Exception : aliased constant string := "38000";
+  str_ERE_Containing_SQL_Not_Permitted : aliased constant string := "38001";
+  str_ERE_Modifying_SQL_Data_Not_Permitted : aliased constant string := "38002";
+  str_ERE_Prohibited_SQL_Statement_Attempted : aliased constant string := "38003";
+  str_ERE_Reading_SQL_Data_Not_Permitted : aliased constant string := "38004";
+  str_ERI_External_Routine_Invocation_Exception : aliased constant string := "39000";
+  str_ERI_Invalid_SQLstate_Returned : aliased constant string := "39001";
+  str_ERI_Null_Value_Not_Allowed : aliased constant string := "39004";
+  str_ERI_Trigger_Protocol_Violated : aliased constant string := "39P01";
+  str_ERI_SRF_Protocol_Violated : aliased constant string := "39P02";
+  str_Savepoint_Exception : aliased constant string := "3B000";
+  str_Invalid_Savepoint_Specification : aliased constant string := "3B001";
+  str_Invalid_Catalog_Name : aliased constant string := "3D000";
+  str_Invalid_Schema_Name : aliased constant string := "3F000";
+  str_Transaction_Rollback : aliased constant string := "40000";
+  str_Transaction_Integrity_Constraint_Violation : aliased constant string := "40002";
+  str_Serialization_Failure : aliased constant string := "40001";
+  str_Statement_Completion_Unknown : aliased constant string := "40003";
+  str_Deadlock_Detected : aliased constant string := "40P01";
+  str_Syntax_Error_Or_Access_Rule_Violation : aliased constant string := "42000";
+  str_Syntax_Error : aliased constant string := "42601";
+  str_Insufficient_Privilege : aliased constant string := "42501";
+  str_Cannot_Coerce : aliased constant string := "42846";
+  str_Grouping_Error : aliased constant string := "42803";
+  str_Invalid_Foreign_Key : aliased constant string := "42830";
+  str_Invalid_Name : aliased constant string := "42602";
+  str_Name_Too_Long : aliased constant string := "42622";
+  str_Reserved_Name : aliased constant string := "42939";
+  str_Datatype_Mismatch : aliased constant string := "42804";
+  str_Indeterminate_Datatype : aliased constant string := "42P18";
+  str_Wrong_Object_Type : aliased constant string := "42809";
+  str_Undefined_Column : aliased constant string := "42703";
+  str_Undefined_Function : aliased constant string := "42883";
+  str_Undefined_Table : aliased constant string := "42P01";
+  str_Undefined_Parameter : aliased constant string := "42P02";
+  str_Undefined_Object : aliased constant string := "42704";
+  str_Duplicate_Column : aliased constant string := "42701";
+  str_Duplicate_Cursor : aliased constant string := "42P03";
+  str_Duplicate_Database : aliased constant string := "42P04";
+  str_Duplicate_Function : aliased constant string := "42723";
+  str_Duplicate_Prepared_Statement : aliased constant string := "42P05";
+  str_Duplicate_Schema : aliased constant string := "42P06";
+  str_Duplicate_Table : aliased constant string := "42P07";
+  str_Duplicate_Alias : aliased constant string := "42712";
+  str_Duplicate_Object : aliased constant string := "42710";
+  str_Ambiguous_Column : aliased constant string := "42702";
+  str_Ambiguous_Function : aliased constant string := "42725";
+  str_Ambiguous_Parameter : aliased constant string := "42P08";
+  str_Ambiguous_Alias : aliased constant string := "42P09";
+  str_Invalid_Column_Reference : aliased constant string := "42P10";
+  str_Invalid_Column_Definition : aliased constant string := "42611";
+  str_Invalid_Cursor_Definition : aliased constant string := "42P11";
+  str_Invalid_Database_Definition : aliased constant string := "42P12";
+  str_Invalid_Function_Definition : aliased constant string := "42P13";
+  str_Invalid_Prepared_Statement_Definition : aliased constant string := "42P14";
+  str_Invalid_Schema_Definition : aliased constant string := "42P15";
+  str_Invalid_Table_Definition : aliased constant string := "42P16";
+  str_Invalid_Object_Definition : aliased constant string := "42P17";
+  str_With_Check_Option_Violation : aliased constant string := "44000";
+  str_Insufficient_Resources : aliased constant string := "53000";
+  str_Disk_Full : aliased constant string := "53100";
+  str_Out_Of_Memory : aliased constant string := "53200";
+  str_Too_Many_Connections : aliased constant string := "53300";
+  str_Program_Limit_Exceeded : aliased constant string := "54000";
+  str_Statement_Too_Complex : aliased constant string := "54001";
+  str_Too_Many_Columns : aliased constant string := "54011";
+  str_Too_Many_Arguments : aliased constant string := "54023";
+  str_Object_Not_In_Prerequisite_State : aliased constant string := "55000";
+  str_Object_In_Use : aliased constant string := "55006";
+  str_Cant_Change_Runtime_Param : aliased constant string := "55P02";
+  str_Lock_Not_Available : aliased constant string := "55P03";
+  str_Operator_Intervention : aliased constant string := "57000";
+  str_Query_Canceled : aliased constant string := "57014";
+  str_Admin_Shutdown : aliased constant string := "57P01";
+  str_Crash_Shutdown : aliased constant string := "57P02";
+  str_Cannot_Connect_Now : aliased constant string := "57P03";
+  str_IO_Error : aliased constant string := "58030";
+  str_Undefined_File : aliased constant string := "58P01";
+  str_Duplicate_File : aliased constant string := "58P02";
+  str_Config_File_Error : aliased constant string := "F0000";
+  str_Lock_File_Exists : aliased constant string := "F0001";
+  str_Plpgsql_Error : aliased constant string := "P0000";
+  str_Raise_Exception : aliased constant string := "P0001";
+  str_No_Data_Found : aliased constant string := "P0002";
+  str_Too_Many_Rows : aliased constant string := "P0003";
+  str_Internal_Error : aliased constant string := "XX000";
+  str_Data_Corrupted : aliased constant string := "XX001";
+  str_Index_Corrupted : aliased constant string := "XX002";
+  str_Unknown_Error : aliased constant string := "ZZZZZ";
 
   error_codes : constant array (natural range <>) of Error_t := (
-    (code => str_successful_completion'access, value => SUCCESSFUL_COMPLETION),
-    (code => str_warning'access, value => WARNING),
-    (code => str_warn_dynamic_result_sets_returned'access, value => WARN_DYNAMIC_RESULT_SETS_RETURNED),
-    (code => str_warn_implicit_zero_bit_padding'access, value => WARN_IMPLICIT_ZERO_BIT_PADDING),
-    (code => str_warn_null_value_eliminated_in_set_function'access, value => WARN_NULL_VALUE_ELIMINATED_IN_SET_FUNCTION),
-    (code => str_warn_privilege_not_granted'access, value => WARN_PRIVILEGE_NOT_GRANTED),
-    (code => str_warn_privilege_not_revoked'access, value => WARN_PRIVILEGE_NOT_REVOKED),
-    (code => str_warn_string_data_right_truncation'access, value => WARN_STRING_DATA_RIGHT_TRUNCATION),
-    (code => str_deprecated_feature'access, value => DEPRECATED_FEATURE),
-    (code => str_no_data'access, value => NO_DATA),
-    (code => str_no_additional_dynamic_result_sets_returned'access, value => NO_ADDITIONAL_DYNAMIC_RESULT_SETS_RETURNED),
-    (code => str_sql_statement_not_yet_complete'access, value => SQL_STATEMENT_NOT_YET_COMPLETE),
-    (code => str_connection_exception'access, value => CONNECTION_EXCEPTION),
-    (code => str_connection_does_not_exist'access, value => CONNECTION_DOES_NOT_EXIST),
-    (code => str_connection_failure'access, value => CONNECTION_FAILURE),
-    (code => str_sqlclient_unable_to_establish_sqlconnection'access, value => SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION),
-    (code => str_sqlserver_rejected_establishment_of_sqlconnection'access, value => SQLSERVER_REJECTED_ESTABLISHMENT_OF_SQLCONNECTION),
-    (code => str_transaction_resolution_unknown'access, value => TRANSACTION_RESOLUTION_UNKNOWN),
-    (code => str_protocol_violation'access, value => PROTOCOL_VIOLATION),
-    (code => str_triggered_action_exception'access, value => TRIGGERED_ACTION_EXCEPTION),
-    (code => str_feature_not_supported'access, value => FEATURE_NOT_SUPPORTED),
-    (code => str_invalid_transaction_initiation'access, value => INVALID_TRANSACTION_INITIATION),
-    (code => str_locator_exception'access, value => LOCATOR_EXCEPTION),
-    (code => str_invalid_locator_specification'access, value => INVALID_LOCATOR_SPECIFICATION),
-    (code => str_invalid_grantor'access, value => INVALID_GRANTOR),
-    (code => str_invalid_grant_operation'access, value => INVALID_GRANT_OPERATION),
-    (code => str_invalid_role_specification'access, value => INVALID_ROLE_SPECIFICATION),
-    (code => str_cardinality_violation'access, value => CARDINALITY_VIOLATION),
-    (code => str_data_exception'access, value => DATA_EXCEPTION),
-    (code => str_array_subscript_error'access, value => ARRAY_SUBSCRIPT_ERROR),
-    (code => str_character_not_in_repertoire'access, value => CHARACTER_NOT_IN_REPERTOIRE),
-    (code => str_datetime_field_overflow'access, value => DATETIME_FIELD_OVERFLOW),
-    (code => str_division_by_zero'access, value => DIVISION_BY_ZERO),
-    (code => str_error_in_assignment'access, value => ERROR_IN_ASSIGNMENT),
-    (code => str_escape_character_conflict'access, value => ESCAPE_CHARACTER_CONFLICT),
-    (code => str_indicator_overflow'access, value => INDICATOR_OVERFLOW),
-    (code => str_interval_field_overflow'access, value => INTERVAL_FIELD_OVERFLOW),
-    (code => str_invalid_argument_for_logarithm'access, value => INVALID_ARGUMENT_FOR_LOGARITHM),
-    (code => str_invalid_argument_for_power_function'access, value => INVALID_ARGUMENT_FOR_POWER_FUNCTION),
-    (code => str_invalid_argument_for_width_bucket_function'access, value => INVALID_ARGUMENT_FOR_WIDTH_BUCKET_FUNCTION),
-    (code => str_invalid_character_value_for_cast'access, value => INVALID_CHARACTER_VALUE_FOR_CAST),
-    (code => str_invalid_datetime_format'access, value => INVALID_DATETIME_FORMAT),
-    (code => str_invalid_escape_character'access, value => INVALID_ESCAPE_CHARACTER),
-    (code => str_invalid_escape_octet'access, value => INVALID_ESCAPE_OCTET),
-    (code => str_invalid_escape_sequence'access, value => INVALID_ESCAPE_SEQUENCE),
-    (code => str_nonstandard_use_of_escape_character'access, value => NONSTANDARD_USE_OF_ESCAPE_CHARACTER),
-    (code => str_invalid_indicator_parameter_value'access, value => INVALID_INDICATOR_PARAMETER_VALUE),
-    (code => str_invalid_limit_value'access, value => INVALID_LIMIT_VALUE),
-    (code => str_invalid_parameter_value'access, value => INVALID_PARAMETER_VALUE),
-    (code => str_invalid_regular_expression'access, value => INVALID_REGULAR_EXPRESSION),
-    (code => str_invalid_time_zone_displacement_value'access, value => INVALID_TIME_ZONE_DISPLACEMENT_VALUE),
-    (code => str_invalid_use_of_escape_character'access, value => INVALID_USE_OF_ESCAPE_CHARACTER),
-    (code => str_most_specific_type_mismatch'access, value => MOST_SPECIFIC_TYPE_MISMATCH),
-    (code => str_null_value_not_allowed'access, value => NULL_VALUE_NOT_ALLOWED),
-    (code => str_null_value_no_indicator_parameter'access, value => NULL_VALUE_NO_INDICATOR_PARAMETER),
-    (code => str_numeric_value_out_of_range'access, value => NUMERIC_VALUE_OUT_OF_RANGE),
-    (code => str_string_data_length_mismatch'access, value => STRING_DATA_LENGTH_MISMATCH),
-    (code => str_string_data_right_truncation'access, value => STRING_DATA_RIGHT_TRUNCATION),
-    (code => str_substring_error'access, value => SUBSTRING_ERROR),
-    (code => str_trim_error'access, value => TRIM_ERROR),
-    (code => str_unterminated_c_string'access, value => UNTERMINATED_C_STRING),
-    (code => str_zero_length_character_string'access, value => ZERO_LENGTH_CHARACTER_STRING),
-    (code => str_floating_point_exception'access, value => FLOATING_POINT_EXCEPTION),
-    (code => str_invalid_text_representation'access, value => INVALID_TEXT_REPRESENTATION),
-    (code => str_invalid_binary_representation'access, value => INVALID_BINARY_REPRESENTATION),
-    (code => str_bad_copy_file_format'access, value => BAD_COPY_FILE_FORMAT),
-    (code => str_untranslatable_character'access, value => UNTRANSLATABLE_CHARACTER),
-    (code => str_not_an_xml_document'access, value => NOT_AN_XML_DOCUMENT),
-    (code => str_invalid_xml_document'access, value => INVALID_XML_DOCUMENT),
-    (code => str_invalid_xml_content'access, value => INVALID_XML_CONTENT),
-    (code => str_invalid_xml_comment'access, value => INVALID_XML_COMMENT),
-    (code => str_invalid_xml_processing_instruction'access, value => INVALID_XML_PROCESSING_INSTRUCTION),
-    (code => str_integrity_constraint_violation'access, value => INTEGRITY_CONSTRAINT_VIOLATION),
-    (code => str_restrict_violation'access, value => RESTRICT_VIOLATION),
-    (code => str_not_null_violation'access, value => NOT_NULL_VIOLATION),
-    (code => str_foreign_key_violation'access, value => FOREIGN_KEY_VIOLATION),
-    (code => str_unique_violation'access, value => UNIQUE_VIOLATION),
-    (code => str_check_violation'access, value => CHECK_VIOLATION),
-    (code => str_invalid_cursor_state'access, value => INVALID_CURSOR_STATE),
-    (code => str_invalid_transaction_state'access, value => INVALID_TRANSACTION_STATE),
-    (code => str_active_sql_transaction'access, value => ACTIVE_SQL_TRANSACTION),
-    (code => str_branch_transaction_already_active'access, value => BRANCH_TRANSACTION_ALREADY_ACTIVE),
-    (code => str_held_cursor_requires_same_isolation_level'access, value => HELD_CURSOR_REQUIRES_SAME_ISOLATION_LEVEL),
-    (code => str_inappropriate_access_mode_for_branch_transaction'access, value => INAPPROPRIATE_ACCESS_MODE_FOR_BRANCH_TRANSACTION),
-    (code => str_inappropriate_isolation_level_for_branch_transaction'access, value => INAPPROPRIATE_ISOLATION_LEVEL_FOR_BRANCH_TRANSACTION),
-    (code => str_no_active_sql_transaction_for_branch_transaction'access, value => NO_ACTIVE_SQL_TRANSACTION_FOR_BRANCH_TRANSACTION),
-    (code => str_read_only_sql_transaction'access, value => READ_ONLY_SQL_TRANSACTION),
-    (code => str_schema_and_data_statement_mixing_not_supported'access, value => SCHEMA_AND_DATA_STATEMENT_MIXING_NOT_SUPPORTED),
-    (code => str_no_active_sql_transaction'access, value => NO_ACTIVE_SQL_TRANSACTION),
-    (code => str_in_failed_sql_transaction'access, value => IN_FAILED_SQL_TRANSACTION),
-    (code => str_invalid_sql_statement_name'access, value => INVALID_SQL_STATEMENT_NAME),
-    (code => str_triggered_data_change_violation'access, value => TRIGGERED_DATA_CHANGE_VIOLATION),
-    (code => str_invalid_authorization_specification'access, value => INVALID_AUTHORIZATION_SPECIFICATION),
-    (code => str_dependent_privilege_descriptors_still_exist'access, value => DEPENDENT_PRIVILEGE_DESCRIPTORS_STILL_EXIST),
-    (code => str_dependent_objects_still_exist'access, value => DEPENDENT_OBJECTS_STILL_EXIST),
-    (code => str_invalid_transaction_termination'access, value => INVALID_TRANSACTION_TERMINATION),
-    (code => str_sre_sql_routine_exception'access, value => SRE_SQL_ROUTINE_EXCEPTION),
-    (code => str_sre_function_executed_no_return_statement'access, value => SRE_FUNCTION_EXECUTED_NO_RETURN_STATEMENT),
-    (code => str_sre_modifying_sql_data_not_permitted'access, value => SRE_MODIFYING_SQL_DATA_NOT_PERMITTED),
-    (code => str_sre_prohibited_sql_statement_attempted'access, value => SRE_PROHIBITED_SQL_STATEMENT_ATTEMPTED),
-    (code => str_sre_reading_sql_data_not_permitted'access, value => SRE_READING_SQL_DATA_NOT_PERMITTED),
-    (code => str_invalid_cursor_name'access, value => INVALID_CURSOR_NAME),
-    (code => str_ere_external_routine_exception'access, value => ERE_EXTERNAL_ROUTINE_EXCEPTION),
-    (code => str_ere_containing_sql_not_permitted'access, value => ERE_CONTAINING_SQL_NOT_PERMITTED),
-    (code => str_ere_modifying_sql_data_not_permitted'access, value => ERE_MODIFYING_SQL_DATA_NOT_PERMITTED),
-    (code => str_ere_prohibited_sql_statement_attempted'access, value => ERE_PROHIBITED_SQL_STATEMENT_ATTEMPTED),
-    (code => str_ere_reading_sql_data_not_permitted'access, value => ERE_READING_SQL_DATA_NOT_PERMITTED),
-    (code => str_eri_external_routine_invocation_exception'access, value => ERI_EXTERNAL_ROUTINE_INVOCATION_EXCEPTION),
-    (code => str_eri_invalid_sqlstate_returned'access, value => ERI_INVALID_SQLSTATE_RETURNED),
-    (code => str_eri_null_value_not_allowed'access, value => ERI_NULL_VALUE_NOT_ALLOWED),
-    (code => str_eri_trigger_protocol_violated'access, value => ERI_TRIGGER_PROTOCOL_VIOLATED),
-    (code => str_eri_srf_protocol_violated'access, value => ERI_SRF_PROTOCOL_VIOLATED),
-    (code => str_savepoint_exception'access, value => SAVEPOINT_EXCEPTION),
-    (code => str_invalid_savepoint_specification'access, value => INVALID_SAVEPOINT_SPECIFICATION),
-    (code => str_invalid_catalog_name'access, value => INVALID_CATALOG_NAME),
-    (code => str_invalid_schema_name'access, value => INVALID_SCHEMA_NAME),
-    (code => str_transaction_rollback'access, value => TRANSACTION_ROLLBACK),
-    (code => str_transaction_integrity_constraint_violation'access, value => TRANSACTION_INTEGRITY_CONSTRAINT_VIOLATION),
-    (code => str_serialization_failure'access, value => SERIALIZATION_FAILURE),
-    (code => str_statement_completion_unknown'access, value => STATEMENT_COMPLETION_UNKNOWN),
-    (code => str_deadlock_detected'access, value => DEADLOCK_DETECTED),
-    (code => str_syntax_error_or_access_rule_violation'access, value => SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION),
-    (code => str_syntax_error'access, value => SYNTAX_ERROR),
-    (code => str_insufficient_privilege'access, value => INSUFFICIENT_PRIVILEGE),
-    (code => str_cannot_coerce'access, value => CANNOT_COERCE),
-    (code => str_grouping_error'access, value => GROUPING_ERROR),
-    (code => str_invalid_foreign_key'access, value => INVALID_FOREIGN_KEY),
-    (code => str_invalid_name'access, value => INVALID_NAME),
-    (code => str_name_too_long'access, value => NAME_TOO_LONG),
-    (code => str_reserved_name'access, value => RESERVED_NAME),
-    (code => str_datatype_mismatch'access, value => DATATYPE_MISMATCH),
-    (code => str_indeterminate_datatype'access, value => INDETERMINATE_DATATYPE),
-    (code => str_wrong_object_type'access, value => WRONG_OBJECT_TYPE),
-    (code => str_undefined_column'access, value => UNDEFINED_COLUMN),
-    (code => str_undefined_function'access, value => UNDEFINED_FUNCTION),
-    (code => str_undefined_table'access, value => UNDEFINED_TABLE),
-    (code => str_undefined_parameter'access, value => UNDEFINED_PARAMETER),
-    (code => str_undefined_object'access, value => UNDEFINED_OBJECT),
-    (code => str_duplicate_column'access, value => DUPLICATE_COLUMN),
-    (code => str_duplicate_cursor'access, value => DUPLICATE_CURSOR),
-    (code => str_duplicate_database'access, value => DUPLICATE_DATABASE),
-    (code => str_duplicate_function'access, value => DUPLICATE_FUNCTION),
-    (code => str_duplicate_prepared_statement'access, value => DUPLICATE_PREPARED_STATEMENT),
-    (code => str_duplicate_schema'access, value => DUPLICATE_SCHEMA),
-    (code => str_duplicate_table'access, value => DUPLICATE_TABLE),
-    (code => str_duplicate_alias'access, value => DUPLICATE_ALIAS),
-    (code => str_duplicate_object'access, value => DUPLICATE_OBJECT),
-    (code => str_ambiguous_column'access, value => AMBIGUOUS_COLUMN),
-    (code => str_ambiguous_function'access, value => AMBIGUOUS_FUNCTION),
-    (code => str_ambiguous_parameter'access, value => AMBIGUOUS_PARAMETER),
-    (code => str_ambiguous_alias'access, value => AMBIGUOUS_ALIAS),
-    (code => str_invalid_column_reference'access, value => INVALID_COLUMN_REFERENCE),
-    (code => str_invalid_column_definition'access, value => INVALID_COLUMN_DEFINITION),
-    (code => str_invalid_cursor_definition'access, value => INVALID_CURSOR_DEFINITION),
-    (code => str_invalid_database_definition'access, value => INVALID_DATABASE_DEFINITION),
-    (code => str_invalid_function_definition'access, value => INVALID_FUNCTION_DEFINITION),
-    (code => str_invalid_prepared_statement_definition'access, value => INVALID_PREPARED_STATEMENT_DEFINITION),
-    (code => str_invalid_schema_definition'access, value => INVALID_SCHEMA_DEFINITION),
-    (code => str_invalid_table_definition'access, value => INVALID_TABLE_DEFINITION),
-    (code => str_invalid_object_definition'access, value => INVALID_OBJECT_DEFINITION),
-    (code => str_with_check_option_violation'access, value => WITH_CHECK_OPTION_VIOLATION),
-    (code => str_insufficient_resources'access, value => INSUFFICIENT_RESOURCES),
-    (code => str_disk_full'access, value => DISK_FULL),
-    (code => str_out_of_memory'access, value => OUT_OF_MEMORY),
-    (code => str_too_many_connections'access, value => TOO_MANY_CONNECTIONS),
-    (code => str_program_limit_exceeded'access, value => PROGRAM_LIMIT_EXCEEDED),
-    (code => str_statement_too_complex'access, value => STATEMENT_TOO_COMPLEX),
-    (code => str_too_many_columns'access, value => TOO_MANY_COLUMNS),
-    (code => str_too_many_arguments'access, value => TOO_MANY_ARGUMENTS),
-    (code => str_object_not_in_prerequisite_state'access, value => OBJECT_NOT_IN_PREREQUISITE_STATE),
-    (code => str_object_in_use'access, value => OBJECT_IN_USE),
-    (code => str_cant_change_runtime_param'access, value => CANT_CHANGE_RUNTIME_PARAM),
-    (code => str_lock_not_available'access, value => LOCK_NOT_AVAILABLE),
-    (code => str_operator_intervention'access, value => OPERATOR_INTERVENTION),
-    (code => str_query_canceled'access, value => QUERY_CANCELED),
-    (code => str_admin_shutdown'access, value => ADMIN_SHUTDOWN),
-    (code => str_crash_shutdown'access, value => CRASH_SHUTDOWN),
-    (code => str_cannot_connect_now'access, value => CANNOT_CONNECT_NOW),
-    (code => str_io_error'access, value => IO_ERROR),
-    (code => str_undefined_file'access, value => UNDEFINED_FILE),
-    (code => str_duplicate_file'access, value => DUPLICATE_FILE),
-    (code => str_config_file_error'access, value => CONFIG_FILE_ERROR),
-    (code => str_lock_file_exists'access, value => LOCK_FILE_EXISTS),
-    (code => str_plpgsql_error'access, value => PLPGSQL_ERROR),
-    (code => str_raise_exception'access, value => RAISE_EXCEPTION),
-    (code => str_no_data_found'access, value => NO_DATA_FOUND),
-    (code => str_too_many_rows'access, value => TOO_MANY_ROWS),
-    (code => str_internal_error'access, value => INTERNAL_ERROR),
-    (code => str_data_corrupted'access, value => DATA_CORRUPTED),
-    (code => str_index_corrupted'access, value => INDEX_CORRUPTED),
-    (code => str_unknown_error'access, value => UNKNOWN_ERROR)
+    (code => str_Successful_Completion'access, value => Successful_Completion),
+    (code => str_Warning'access, value => Warning),
+    (code => str_Warn_Dynamic_Result_Sets_Returned'access, value => Warn_Dynamic_Result_Sets_Returned),
+    (code => str_Warn_Implicit_Zero_Bit_Padding'access, value => Warn_Implicit_Zero_Bit_Padding),
+    (code => str_Warn_Null_Value_Eliminated_In_Set_Function'access, value => Warn_Null_Value_Eliminated_In_Set_Function),
+    (code => str_Warn_Privilege_Not_Granted'access, value => Warn_Privilege_Not_Granted),
+    (code => str_Warn_Privilege_Not_Revoked'access, value => Warn_Privilege_Not_Revoked),
+    (code => str_Warn_String_Data_Right_Truncation'access, value => Warn_String_Data_Right_Truncation),
+    (code => str_Deprecated_Feature'access, value => Deprecated_Feature),
+    (code => str_No_Data'access, value => No_Data),
+    (code => str_No_Additional_Dynamic_Result_Sets_Returned'access, value => No_Additional_Dynamic_Result_Sets_Returned),
+    (code => str_SQL_Statement_Not_Yet_Complete'access, value => SQL_Statement_Not_Yet_Complete),
+    (code => str_Connection_Exception'access, value => Connection_Exception),
+    (code => str_Connection_Does_Not_Exist'access, value => Connection_Does_Not_Exist),
+    (code => str_Connection_Failure'access, value => Connection_Failure),
+    (code => str_SQL_Client_Unable_To_Establish_SQL_Connection'access, value => SQL_Client_Unable_To_Establish_SQL_Connection),
+    (code => str_SQL_Server_Rejected_Establishment_Of_SQL_Connection'access, value => SQL_Server_Rejected_Establishment_Of_SQL_Connection),
+    (code => str_Transaction_Resolution_Unknown'access, value => Transaction_Resolution_Unknown),
+    (code => str_Protocol_Violation'access, value => Protocol_Violation),
+    (code => str_Triggered_Action_Exception'access, value => Triggered_Action_Exception),
+    (code => str_Feature_Not_Supported'access, value => Feature_Not_Supported),
+    (code => str_Invalid_Transaction_Initiation'access, value => Invalid_Transaction_Initiation),
+    (code => str_Locator_Exception'access, value => Locator_Exception),
+    (code => str_Invalid_Locator_Specification'access, value => Invalid_Locator_Specification),
+    (code => str_Invalid_Grantor'access, value => Invalid_Grantor),
+    (code => str_Invalid_Grant_Operation'access, value => Invalid_Grant_Operation),
+    (code => str_Invalid_Role_Specification'access, value => Invalid_Role_Specification),
+    (code => str_Cardinality_Violation'access, value => Cardinality_Violation),
+    (code => str_Data_Exception'access, value => Data_Exception),
+    (code => str_Array_Subscript_Error'access, value => Array_Subscript_Error),
+    (code => str_Character_Not_In_Repertoire'access, value => Character_Not_In_Repertoire),
+    (code => str_Datetime_Field_Overflow'access, value => Datetime_Field_Overflow),
+    (code => str_Division_By_Zero'access, value => Division_By_Zero),
+    (code => str_Error_In_Assignment'access, value => Error_In_Assignment),
+    (code => str_Escape_Character_Conflict'access, value => Escape_Character_Conflict),
+    (code => str_Indicator_Overflow'access, value => Indicator_Overflow),
+    (code => str_Interval_Field_Overflow'access, value => Interval_Field_Overflow),
+    (code => str_Invalid_Argument_For_Logarithm'access, value => Invalid_Argument_For_Logarithm),
+    (code => str_Invalid_Argument_For_Power_Function'access, value => Invalid_Argument_For_Power_Function),
+    (code => str_Invalid_Argument_For_Width_Bucket_Function'access, value => Invalid_Argument_For_Width_Bucket_Function),
+    (code => str_Invalid_Character_Value_For_Cast'access, value => Invalid_Character_Value_For_Cast),
+    (code => str_Invalid_Datetime_Format'access, value => Invalid_Datetime_Format),
+    (code => str_Invalid_Escape_Character'access, value => Invalid_Escape_Character),
+    (code => str_Invalid_Escape_Octet'access, value => Invalid_Escape_Octet),
+    (code => str_Invalid_Escape_Sequence'access, value => Invalid_Escape_Sequence),
+    (code => str_Nonstandard_Use_Of_Escape_Character'access, value => Nonstandard_Use_Of_Escape_Character),
+    (code => str_Invalid_Indicator_Parameter_Value'access, value => Invalid_Indicator_Parameter_Value),
+    (code => str_Invalid_Limit_Value'access, value => Invalid_Limit_Value),
+    (code => str_Invalid_Parameter_Value'access, value => Invalid_Parameter_Value),
+    (code => str_Invalid_Regular_Expression'access, value => Invalid_Regular_Expression),
+    (code => str_Invalid_Time_Zone_Displacement_Value'access, value => Invalid_Time_Zone_Displacement_Value),
+    (code => str_Invalid_Use_Of_Escape_Character'access, value => Invalid_Use_Of_Escape_Character),
+    (code => str_Most_Specific_Type_Mismatch'access, value => Most_Specific_Type_Mismatch),
+    (code => str_Null_Value_Not_Allowed'access, value => Null_Value_Not_Allowed),
+    (code => str_Null_Value_No_Indicator_Parameter'access, value => Null_Value_No_Indicator_Parameter),
+    (code => str_Numeric_Value_Out_Of_Range'access, value => Numeric_Value_Out_Of_Range),
+    (code => str_String_Data_Length_Mismatch'access, value => String_Data_Length_Mismatch),
+    (code => str_String_Data_Right_Truncation'access, value => String_Data_Right_Truncation),
+    (code => str_Substring_Error'access, value => Substring_Error),
+    (code => str_Trim_Error'access, value => Trim_Error),
+    (code => str_Unterminated_C_String'access, value => Unterminated_C_String),
+    (code => str_Zero_Length_Character_String'access, value => Zero_Length_Character_String),
+    (code => str_Floating_Point_Exception'access, value => Floating_Point_Exception),
+    (code => str_Invalid_Text_Representation'access, value => Invalid_Text_Representation),
+    (code => str_Invalid_Binary_Representation'access, value => Invalid_Binary_Representation),
+    (code => str_Bad_Copy_File_Format'access, value => Bad_Copy_File_Format),
+    (code => str_Untranslatable_Character'access, value => Untranslatable_Character),
+    (code => str_Not_An_XML_Document'access, value => Not_An_XML_Document),
+    (code => str_Invalid_XML_Document'access, value => Invalid_XML_Document),
+    (code => str_Invalid_XML_Content'access, value => Invalid_XML_Content),
+    (code => str_Invalid_XML_Comment'access, value => Invalid_XML_Comment),
+    (code => str_Invalid_XML_Processing_Instruction'access, value => Invalid_XML_Processing_Instruction),
+    (code => str_Integrity_Constraint_Violation'access, value => Integrity_Constraint_Violation),
+    (code => str_Restrict_Violation'access, value => Restrict_Violation),
+    (code => str_Not_Null_Violation'access, value => Not_Null_Violation),
+    (code => str_Foreign_Key_Violation'access, value => Foreign_Key_Violation),
+    (code => str_Unique_Violation'access, value => Unique_Violation),
+    (code => str_Check_Violation'access, value => Check_Violation),
+    (code => str_Invalid_Cursor_State'access, value => Invalid_Cursor_State),
+    (code => str_Invalid_Transaction_State'access, value => Invalid_Transaction_State),
+    (code => str_Active_SQL_Transaction'access, value => Active_SQL_Transaction),
+    (code => str_Branch_Transaction_Already_Active'access, value => Branch_Transaction_Already_Active),
+    (code => str_Held_Cursor_Requires_Same_Isolation_Level'access, value => Held_Cursor_Requires_Same_Isolation_Level),
+    (code => str_Inappropriate_Access_Mode_For_Branch_Transaction'access, value => Inappropriate_Access_Mode_For_Branch_Transaction),
+    (code => str_Inappropriate_Isolation_Level_For_Branch_Transaction'access, value => Inappropriate_Isolation_Level_For_Branch_Transaction),
+    (code => str_No_Active_SQL_Transaction_For_Branch_Transaction'access, value => No_Active_SQL_Transaction_For_Branch_Transaction),
+    (code => str_Read_Only_SQL_Transaction'access, value => Read_Only_SQL_Transaction),
+    (code => str_Schema_And_Data_Statement_Mixing_Not_Supported'access, value => Schema_And_Data_Statement_Mixing_Not_Supported),
+    (code => str_No_Active_SQL_Transaction'access, value => No_Active_SQL_Transaction),
+    (code => str_In_Failed_SQL_Transaction'access, value => In_Failed_SQL_Transaction),
+    (code => str_Invalid_SQL_Statement_Name'access, value => Invalid_SQL_Statement_Name),
+    (code => str_Triggered_Data_Change_Violation'access, value => Triggered_Data_Change_Violation),
+    (code => str_Invalid_Authorization_Specification'access, value => Invalid_Authorization_Specification),
+    (code => str_Dependent_Privilege_Descriptors_Still_Exist'access, value => Dependent_Privilege_Descriptors_Still_Exist),
+    (code => str_Dependent_Objects_Still_Exist'access, value => Dependent_Objects_Still_Exist),
+    (code => str_Invalid_Transaction_Termination'access, value => Invalid_Transaction_Termination),
+    (code => str_SRE_SQL_Routine_Exception'access, value => SRE_SQL_Routine_Exception),
+    (code => str_SRE_Function_Executed_No_Return_Statement'access, value => SRE_Function_Executed_No_Return_Statement),
+    (code => str_SRE_Modifying_SQL_Data_Not_Permitted'access, value => SRE_Modifying_SQL_Data_Not_Permitted),
+    (code => str_SRE_Prohibited_SQL_Statement_Attempted'access, value => SRE_Prohibited_SQL_Statement_Attempted),
+    (code => str_SRE_Reading_SQL_Data_Not_Permitted'access, value => SRE_Reading_SQL_Data_Not_Permitted),
+    (code => str_Invalid_Cursor_Name'access, value => Invalid_Cursor_Name),
+    (code => str_ERE_External_Routine_Exception'access, value => ERE_External_Routine_Exception),
+    (code => str_ERE_Containing_SQL_Not_Permitted'access, value => ERE_Containing_SQL_Not_Permitted),
+    (code => str_ERE_Modifying_SQL_Data_Not_Permitted'access, value => ERE_Modifying_SQL_Data_Not_Permitted),
+    (code => str_ERE_Prohibited_SQL_Statement_Attempted'access, value => ERE_Prohibited_SQL_Statement_Attempted),
+    (code => str_ERE_Reading_SQL_Data_Not_Permitted'access, value => ERE_Reading_SQL_Data_Not_Permitted),
+    (code => str_ERI_External_Routine_Invocation_Exception'access, value => ERI_External_Routine_Invocation_Exception),
+    (code => str_ERI_Invalid_SQLstate_Returned'access, value => ERI_Invalid_SQLstate_Returned),
+    (code => str_ERI_Null_Value_Not_Allowed'access, value => ERI_Null_Value_Not_Allowed),
+    (code => str_ERI_Trigger_Protocol_Violated'access, value => ERI_Trigger_Protocol_Violated),
+    (code => str_ERI_SRF_Protocol_Violated'access, value => ERI_SRF_Protocol_Violated),
+    (code => str_Savepoint_Exception'access, value => Savepoint_Exception),
+    (code => str_Invalid_Savepoint_Specification'access, value => Invalid_Savepoint_Specification),
+    (code => str_Invalid_Catalog_Name'access, value => Invalid_Catalog_Name),
+    (code => str_Invalid_Schema_Name'access, value => Invalid_Schema_Name),
+    (code => str_Transaction_Rollback'access, value => Transaction_Rollback),
+    (code => str_Transaction_Integrity_Constraint_Violation'access, value => Transaction_Integrity_Constraint_Violation),
+    (code => str_Serialization_Failure'access, value => Serialization_Failure),
+    (code => str_Statement_Completion_Unknown'access, value => Statement_Completion_Unknown),
+    (code => str_Deadlock_Detected'access, value => Deadlock_Detected),
+    (code => str_Syntax_Error_Or_Access_Rule_Violation'access, value => Syntax_Error_Or_Access_Rule_Violation),
+    (code => str_Syntax_Error'access, value => Syntax_Error),
+    (code => str_Insufficient_Privilege'access, value => Insufficient_Privilege),
+    (code => str_Cannot_Coerce'access, value => Cannot_Coerce),
+    (code => str_Grouping_Error'access, value => Grouping_Error),
+    (code => str_Invalid_Foreign_Key'access, value => Invalid_Foreign_Key),
+    (code => str_Invalid_Name'access, value => Invalid_Name),
+    (code => str_Name_Too_Long'access, value => Name_Too_Long),
+    (code => str_Reserved_Name'access, value => Reserved_Name),
+    (code => str_Datatype_Mismatch'access, value => Datatype_Mismatch),
+    (code => str_Indeterminate_Datatype'access, value => Indeterminate_Datatype),
+    (code => str_Wrong_Object_Type'access, value => Wrong_Object_Type),
+    (code => str_Undefined_Column'access, value => Undefined_Column),
+    (code => str_Undefined_Function'access, value => Undefined_Function),
+    (code => str_Undefined_Table'access, value => Undefined_Table),
+    (code => str_Undefined_Parameter'access, value => Undefined_Parameter),
+    (code => str_Undefined_Object'access, value => Undefined_Object),
+    (code => str_Duplicate_Column'access, value => Duplicate_Column),
+    (code => str_Duplicate_Cursor'access, value => Duplicate_Cursor),
+    (code => str_Duplicate_Database'access, value => Duplicate_Database),
+    (code => str_Duplicate_Function'access, value => Duplicate_Function),
+    (code => str_Duplicate_Prepared_Statement'access, value => Duplicate_Prepared_Statement),
+    (code => str_Duplicate_Schema'access, value => Duplicate_Schema),
+    (code => str_Duplicate_Table'access, value => Duplicate_Table),
+    (code => str_Duplicate_Alias'access, value => Duplicate_Alias),
+    (code => str_Duplicate_Object'access, value => Duplicate_Object),
+    (code => str_Ambiguous_Column'access, value => Ambiguous_Column),
+    (code => str_Ambiguous_Function'access, value => Ambiguous_Function),
+    (code => str_Ambiguous_Parameter'access, value => Ambiguous_Parameter),
+    (code => str_Ambiguous_Alias'access, value => Ambiguous_Alias),
+    (code => str_Invalid_Column_Reference'access, value => Invalid_Column_Reference),
+    (code => str_Invalid_Column_Definition'access, value => Invalid_Column_Definition),
+    (code => str_Invalid_Cursor_Definition'access, value => Invalid_Cursor_Definition),
+    (code => str_Invalid_Database_Definition'access, value => Invalid_Database_Definition),
+    (code => str_Invalid_Function_Definition'access, value => Invalid_Function_Definition),
+    (code => str_Invalid_Prepared_Statement_Definition'access, value => Invalid_Prepared_Statement_Definition),
+    (code => str_Invalid_Schema_Definition'access, value => Invalid_Schema_Definition),
+    (code => str_Invalid_Table_Definition'access, value => Invalid_Table_Definition),
+    (code => str_Invalid_Object_Definition'access, value => Invalid_Object_Definition),
+    (code => str_With_Check_Option_Violation'access, value => With_Check_Option_Violation),
+    (code => str_Insufficient_Resources'access, value => Insufficient_Resources),
+    (code => str_Disk_Full'access, value => Disk_Full),
+    (code => str_Out_Of_Memory'access, value => Out_Of_Memory),
+    (code => str_Too_Many_Connections'access, value => Too_Many_Connections),
+    (code => str_Program_Limit_Exceeded'access, value => Program_Limit_Exceeded),
+    (code => str_Statement_Too_Complex'access, value => Statement_Too_Complex),
+    (code => str_Too_Many_Columns'access, value => Too_Many_Columns),
+    (code => str_Too_Many_Arguments'access, value => Too_Many_Arguments),
+    (code => str_Object_Not_In_Prerequisite_State'access, value => Object_Not_In_Prerequisite_State),
+    (code => str_Object_In_Use'access, value => Object_In_Use),
+    (code => str_Cant_Change_Runtime_Param'access, value => Cant_Change_Runtime_Param),
+    (code => str_Lock_Not_Available'access, value => Lock_Not_Available),
+    (code => str_Operator_Intervention'access, value => Operator_Intervention),
+    (code => str_Query_Canceled'access, value => Query_Canceled),
+    (code => str_Admin_Shutdown'access, value => Admin_Shutdown),
+    (code => str_Crash_Shutdown'access, value => Crash_Shutdown),
+    (code => str_Cannot_Connect_Now'access, value => Cannot_Connect_Now),
+    (code => str_IO_Error'access, value => IO_Error),
+    (code => str_Undefined_File'access, value => Undefined_File),
+    (code => str_Duplicate_File'access, value => Duplicate_File),
+    (code => str_Config_File_Error'access, value => Config_File_Error),
+    (code => str_Lock_File_Exists'access, value => Lock_File_Exists),
+    (code => str_Plpgsql_Error'access, value => Plpgsql_Error),
+    (code => str_Raise_Exception'access, value => Raise_Exception),
+    (code => str_No_Data_Found'access, value => No_Data_Found),
+    (code => str_Too_Many_Rows'access, value => Too_Many_Rows),
+    (code => str_Internal_Error'access, value => Internal_Error),
+    (code => str_Data_Corrupted'access, value => Data_Corrupted),
+    (code => str_Index_Corrupted'access, value => Index_Corrupted),
+    (code => str_Unknown_Error'access, value => Unknown_Error)
   );
 
   function Error_Value (code : string)
@@ -401,7 +401,7 @@ package body PGAda.Errors is
         return error_codes (index).value;
       end if;
     end loop;
-    return unknown_error;
+    return Unknown_Error;
   end Error_Value;
 
 end PGAda.Errors;

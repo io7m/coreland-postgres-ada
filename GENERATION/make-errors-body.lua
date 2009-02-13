@@ -40,7 +40,7 @@ io.write ([[
 
 for index, pair in pairs (lines) do
   io.write ("    (code => str_"..pair.name.."'access, value => "
-    ..pair.name:upper()..")")
+    ..pair.name..")")
 
   if index == table.maxn (lines) then
     io.write ("\n")
@@ -60,7 +60,7 @@ io.write ([[
         return error_codes (index).value;
       end if;
     end loop;
-    return unknown_error;
+    return Unknown_Error;
   end Error_Value;
 
 end PGAda.Errors;

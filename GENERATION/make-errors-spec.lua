@@ -21,14 +21,13 @@ io.write ([[
 -- auto generated - do not edit
 
 package PGAda.Errors is
-
-  Pragma Preelaborate;
+  pragma Preelaborate;
 
   type Error_Value_t is (
 ]])
 
 for index, value in pairs (lines) do
-  io.write ("    "..value.name:upper())
+  io.write ("    "..value.name)
   if index == table.maxn (lines) then
     io.write ("\n")
   else

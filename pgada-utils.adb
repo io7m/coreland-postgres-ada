@@ -44,7 +44,7 @@ package body PGAda.Utils is
   -- Begin_Transaction --
   -----------------------
 
-  procedure Begin_Transaction (DB : in PGAda.Database.Connection_T'Class) is
+  procedure Begin_Transaction (DB : in PGAda.Database.Connection_t'Class) is
   begin
     PGAda.Database.Exec (DB, "BEGIN");
   end Begin_Transaction;
@@ -53,7 +53,7 @@ package body PGAda.Utils is
   -- Commit --
   ------------
 
-  procedure Commit (DB : in PGAda.Database.Connection_T'Class) is
+  procedure Commit (DB : in PGAda.Database.Connection_t'Class) is
   begin
     PGAda.Database.Exec (DB, "COMMIT");
   end Commit;
@@ -63,13 +63,13 @@ package body PGAda.Utils is
   ----------------
 
   function Next_Value
-    (DB            : in PGAda.Database.Connection_T'Class;
+    (DB            : in PGAda.Database.Connection_t'Class;
      Sequence_Name : in String) return Integer
   is
-    Result : PGAda.Database.Result_T;
+    Result : PGAda.Database.Result_t;
   begin
     PGAda.Database.Exec (DB,
-      "SELECT NEXTVAL(" & PGAda.syntax.Escape (Sequence_Name) & ")", Result);
+      "SELECT NEXTVAL(" & PGAda.Syntax.Escape (Sequence_Name) & ")", Result);
     return Integer'Value (PGAda.Database.Get_Value (Result, 1, 1));
   end Next_Value;
 
@@ -77,7 +77,7 @@ package body PGAda.Utils is
   -- Rollback --
   --------------
 
-  procedure Rollback (DB : in PGAda.Database.Connection_T'Class) is
+  procedure Rollback (DB : in PGAda.Database.Connection_t'Class) is
   begin
     PGAda.Database.Exec (DB, "ROLLBACK");
   end Rollback;
