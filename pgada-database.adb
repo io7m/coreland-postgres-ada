@@ -141,7 +141,7 @@ package body PGAda.Database is
   -- Error_Message --
   -------------------
 
-  function Error_Message (Result : Result_t) return string is
+  function Error_Message (Result : Result_t) return String is
   begin
     return Result_Error_Field
       (Result => Result,
@@ -477,7 +477,7 @@ package body PGAda.Database is
 
   function Result_Error_Field
   (Result : Result_t;
-   Field  : Error_Field) return string
+   Field  : Error_Field) return String
   is
     C_Res : constant ICS.chars_ptr :=
       PGAda.Thin.PQ_Result_Error_Field (Result.Actual, Field);

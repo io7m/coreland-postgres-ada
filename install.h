@@ -10,7 +10,7 @@ enum {
   INST_COPY_EXEC  = 1,
   INST_SYMLINK    = 2,
   INST_MKDIR      = 3,
-  INST_LIBLINK    = 4,
+  INST_LIBLINK    = 4
 };
 
 struct install_status_t {

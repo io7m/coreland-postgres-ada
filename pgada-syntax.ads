@@ -39,7 +39,7 @@ package PGAda.Syntax is
   pragma Pure;
 
   function Escape (S : String) return String;
-  --  Escape a string according to what PostgreSQL is waiting
+  --  Escape a String according to what PostgreSQL is waiting
 
   function Image (I : Integer) return String;
   --  Return the image of an integer without the trailing space

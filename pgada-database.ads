@@ -127,7 +127,7 @@ package PGAda.Database is
 
   function Result_Error_Field
     (Result : Result_t;
-     Field  : Error_Field) return string;
+     Field  : Error_Field) return String;
 
   function Nbr_Tuples (Result : Result_t) return Natural;
   function Number_Of_Tuples (Result : Result_t)

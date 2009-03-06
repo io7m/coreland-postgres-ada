@@ -750,9 +750,11 @@ inst_copy (struct install_item *ins, unsigned int flags)
   static char gid_str [INSTALL_FMT_GID];
   user_id_t uid;
   group_id_t gid;
-  permissions_t perm = { ins->perm };
+  permissions_t perm;
   unsigned long size = 0;
   struct install_status_t status = INSTALL_STATUS_INIT;
+
+  perm.value = ins->perm;
 
   status = install_uidgid_lookup (ins->owner, &uid, ins->group, &gid);
   if (status.status != INSTALL_STATUS_OK) return status;
@@ -1069,7 +1071,9 @@ instchk_copy (struct install_item *ins, unsigned int flags)
   struct install_status_t status = INSTALL_STATUS_INIT;
   user_id_t uid;
   group_id_t gid;
-  permissions_t perm = { ins->perm };
+  permissions_t perm;
+
+  perm.value = ins->perm;
 
   status = install_uidgid_lookup (ins->owner, &uid, ins->group, &gid);
   if (status.status != INSTALL_STATUS_OK) return status;
@@ -1089,7 +1093,9 @@ instchk_link (struct install_item *ins, unsigned int flags)
   struct install_status_t status = INSTALL_STATUS_INIT;
   user_id_t uid;
   group_id_t gid;
-  permissions_t perm = { ins->perm };
+  permissions_t perm;
+
+  perm.value = ins->perm;
 
   status = install_uidgid_lookup (ins->owner, &uid, ins->group, &gid);
   if (status.status != INSTALL_STATUS_OK) return status;
@@ -1109,7 +1115,9 @@ instchk_mkdir (struct install_item *ins, unsigned int flags)
   struct install_status_t status = INSTALL_STATUS_INIT;
   user_id_t uid;
   group_id_t gid;
-  permissions_t perm = { ins->perm };
+  permissions_t perm;
+
+  perm.value = ins->perm;
 
   status = install_uidgid_lookup (ins->owner, &uid, ins->group, &gid);
   if (status.status != INSTALL_STATUS_OK) return status;

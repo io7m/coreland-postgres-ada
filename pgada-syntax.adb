@@ -48,7 +48,7 @@ package body PGAda.Syntax is
     for I in S'Range loop
       if S (I) = ''' then
         Last := Last + 1;
-        Result (Last) := '\';
+        Result (Last) := ''';
       end if;
       Last := Last + 1;
       Result (Last) := S (I);

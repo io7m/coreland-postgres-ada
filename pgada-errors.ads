@@ -197,6 +197,6 @@ package PGAda.Errors is
     Unknown_Error
   );
 
-  function Error_Value (code : string) return Error_Value_t;
+  function Error_Value (code : String) return Error_Value_t;
 
 end PGAda.Errors;
