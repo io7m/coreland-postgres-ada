@@ -160,7 +160,7 @@ package PGAda.Thin is
   function PQ_F_Type
    (Res         : PG_Result_Access_t;
     Field_Index : C.int) return Oid;
-  pragma Import (C, PQ_F_Type, "PQftyp");
+  pragma Import (C, PQ_F_Type, "PQftype");
 
   function PQ_Get_Value
    (Res       : PG_Result_Access_t;
