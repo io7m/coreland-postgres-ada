@@ -5,6 +5,7 @@
 --                                 S p e c                                  --
 --                                                                          --
 --  Copyright (c) Samuel Tardieu 2000                                       --
+--  Copyright (c) coreland       2009                                       --
 --  All rights reserved.                                                    --
 --                                                                          --
 --  Redistribution and use in source and binary forms, with or without      --
