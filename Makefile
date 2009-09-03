@@ -3,13 +3,13 @@
 default: all
 
 all:\
-ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.o ctxt/incdir.o ctxt/repos.o \
-ctxt/slibdir.o ctxt/version.o deinstaller deinstaller.o install-core.o \
-install-error.o install-posix.o install-win32.o install.a installer installer.o \
-instchk instchk.o insthier.o pgada-conf pgada-conf.o pgada-database.ali \
-pgada-database.o pgada-errors.ali pgada-errors.o pgada-syntax.ali \
-pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali pgada-utils.o \
-pgada.a pgada.ali pgada.o
+ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.o ctxt/fakeroot.o ctxt/incdir.o \
+ctxt/repos.o ctxt/slibdir.o ctxt/version.o deinstaller deinstaller.o \
+install-core.o install-error.o install-posix.o install-win32.o install.a \
+installer installer.o instchk instchk.o insthier.o pgada-conf pgada-conf.o \
+pgada-database.ali pgada-database.o pgada-errors.ali pgada-errors.o \
+pgada-syntax.ali pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali \
+pgada-utils.o pgada.a pgada.ali pgada.o
 
 # Mkf-deinstall
 deinstall: deinstaller conf-sosuffix
@@ -51,7 +51,7 @@ ada-bind:\
 conf-adabind conf-systype conf-adatype
 
 ada-compile:\
-conf-adacomp conf-adatype conf-systype
+conf-adacomp conf-adatype conf-systype conf-adacflags
 
 ada-link:\
 conf-adalink conf-adatype conf-systype
@@ -76,11 +76,11 @@ mk-adatype
 	./mk-adatype > conf-adatype.tmp && mv conf-adatype.tmp conf-adatype
 
 conf-cctype:\
-conf-cc mk-cctype
+conf-cc conf-cc mk-cctype
 	./mk-cctype > conf-cctype.tmp && mv conf-cctype.tmp conf-cctype
 
 conf-ldtype:\
-conf-ld mk-ldtype
+conf-ld conf-ld mk-ldtype
 	./mk-ldtype > conf-ldtype.tmp && mv conf-ldtype.tmp conf-ldtype
 
 conf-sosuffix:\
@@ -101,10 +101,10 @@ cc-compile ctxt/bindir.c
 	./cc-compile ctxt/bindir.c
 
 ctxt/ctxt.a:\
-cc-slib ctxt/ctxt.sld ctxt/bindir.o ctxt/dlibdir.o ctxt/incdir.o ctxt/repos.o \
-ctxt/slibdir.o ctxt/version.o
-	./cc-slib ctxt/ctxt ctxt/bindir.o ctxt/dlibdir.o ctxt/incdir.o ctxt/repos.o \
-	ctxt/slibdir.o ctxt/version.o
+cc-slib ctxt/ctxt.sld ctxt/bindir.o ctxt/dlibdir.o ctxt/fakeroot.o \
+ctxt/incdir.o ctxt/repos.o ctxt/slibdir.o ctxt/version.o
+	./cc-slib ctxt/ctxt ctxt/bindir.o ctxt/dlibdir.o ctxt/fakeroot.o ctxt/incdir.o \
+	ctxt/repos.o ctxt/slibdir.o ctxt/version.o
 
 # ctxt/dlibdir.c.mff
 ctxt/dlibdir.c: mk-ctxt conf-dlibdir
@@ -114,6 +114,15 @@ ctxt/dlibdir.c: mk-ctxt conf-dlibdir
 ctxt/dlibdir.o:\
 cc-compile ctxt/dlibdir.c
 	./cc-compile ctxt/dlibdir.c
+
+# ctxt/fakeroot.c.mff
+ctxt/fakeroot.c: mk-ctxt conf-fakeroot
+	rm -f ctxt/fakeroot.c
+	./mk-ctxt ctxt_fakeroot < conf-fakeroot > ctxt/fakeroot.c
+
+ctxt/fakeroot.o:\
+cc-compile ctxt/fakeroot.c
+	./cc-compile ctxt/fakeroot.c
 
 # ctxt/incdir.c.mff
 ctxt/incdir.c: mk-ctxt conf-incdir
@@ -156,7 +165,7 @@ cc-link deinstaller.ld deinstaller.o insthier.o install.a ctxt/ctxt.a
 	./cc-link deinstaller deinstaller.o insthier.o install.a ctxt/ctxt.a
 
 deinstaller.o:\
-cc-compile deinstaller.c install.h
+cc-compile deinstaller.c install.h ctxt.h
 	./cc-compile deinstaller.c
 
 install-core.o:\
@@ -189,7 +198,7 @@ cc-link installer.ld installer.o insthier.o install.a ctxt/ctxt.a
 	./cc-link installer installer.o insthier.o install.a ctxt/ctxt.a
 
 installer.o:\
-cc-compile installer.c install.h
+cc-compile installer.c ctxt.h install.h
 	./cc-compile installer.c
 
 instchk:\
@@ -197,7 +206,7 @@ cc-link instchk.ld instchk.o insthier.o install.a ctxt/ctxt.a
 	./cc-link instchk instchk.o insthier.o install.a ctxt/ctxt.a
 
 instchk.o:\
-cc-compile instchk.c install.h
+cc-compile instchk.c ctxt.h install.h
 	./cc-compile instchk.c
 
 insthier.o:\
@@ -298,13 +307,13 @@ clean-all: sysdeps_clean obj_clean ext_clean
 clean: obj_clean
 obj_clean:
 	rm -f ctxt/bindir.c ctxt/bindir.o ctxt/ctxt.a ctxt/dlibdir.c ctxt/dlibdir.o \
-	ctxt/incdir.c ctxt/incdir.o ctxt/repos.c ctxt/repos.o ctxt/slibdir.c \
-	ctxt/slibdir.o ctxt/version.c ctxt/version.o deinstaller deinstaller.o \
-	install-core.o install-error.o install-posix.o install-win32.o install.a \
-	installer installer.o instchk instchk.o insthier.o pgada-conf pgada-conf.o \
-	pgada-database.ali pgada-database.o pgada-errors.ali pgada-errors.o \
-	pgada-syntax.ali pgada-syntax.o pgada-thin.ali pgada-thin.o pgada-utils.ali \
-	pgada-utils.o pgada.a pgada.ali pgada.o
+	ctxt/fakeroot.c ctxt/fakeroot.o ctxt/incdir.c ctxt/incdir.o ctxt/repos.c \
+	ctxt/repos.o ctxt/slibdir.c ctxt/slibdir.o ctxt/version.c ctxt/version.o \
+	deinstaller deinstaller.o install-core.o install-error.o install-posix.o \
+	install-win32.o install.a installer installer.o instchk instchk.o insthier.o \
+	pgada-conf pgada-conf.o pgada-database.ali pgada-database.o pgada-errors.ali \
+	pgada-errors.o pgada-syntax.ali pgada-syntax.o pgada-thin.ali pgada-thin.o \
+	pgada-utils.ali pgada-utils.o pgada.a pgada.ali pgada.o
 ext_clean:
 	rm -f conf-adatype conf-cctype conf-ldtype conf-sosuffix conf-systype mk-ctxt
 

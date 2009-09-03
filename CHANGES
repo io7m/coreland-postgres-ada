@@ -9,3 +9,4 @@
 20090213 code: automated style check updates.
 20090402 version: postgres-ada 0.2.0
 20090403 code: PQftyp -> PQftype.
+20090903 code: updated installer.
