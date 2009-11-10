@@ -32,18 +32,18 @@ install-check: instchk conf-sosuffix
 #----------------------------------------------------------------------
 # SYSDEPS start
 
-_sysinfo.h:
-	@echo SYSDEPS sysinfo run create _sysinfo.h 
-	@(cd SYSDEPS && ./sd-run modules/sysinfo)
+_sd_sysinfo.h:
+	@echo SYSDEPS sd-sysinfo run create _sd_sysinfo.h 
+	@(cd SYSDEPS && ./sd-run modules/sd-sysinfo)
 
 
-sysinfo_clean:
-	@echo SYSDEPS sysinfo clean _sysinfo.h 
-	@(cd SYSDEPS && ./sd-clean modules/sysinfo)
+sd-sysinfo_clean:
+	@echo SYSDEPS sd-sysinfo clean _sd_sysinfo.h 
+	@(cd SYSDEPS && ./sd-clean modules/sd-sysinfo)
 
 
 sysdeps_clean:\
-sysinfo_clean \
+sd-sysinfo_clean \
 
 
 
@@ -237,7 +237,7 @@ cc-link pgada-conf.ld pgada-conf.o ctxt/ctxt.a
 	./cc-link pgada-conf pgada-conf.o ctxt/ctxt.a
 
 pgada-conf.o:\
-cc-compile pgada-conf.c ctxt.h _sysinfo.h
+cc-compile pgada-conf.c ctxt.h _sd_sysinfo.h
 	./cc-compile pgada-conf.c
 
 pgada-database.ads:\

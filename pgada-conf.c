@@ -18,7 +18,7 @@ static long str_rchr(register const char *, register int);
 
 /* PROJECT SPECIFIC */
 
-#include "_sysinfo.h"
+#include "_sd_sysinfo.h"
 
 const char progname[] = "pgada-conf";
 
